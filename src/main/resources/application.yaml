@@ -1,0 +1,11 @@
+spring:
+  application:
+    name: booking-train-backend
+  datasource:
+    url: "jdbc:mysql://localhost:3306/booking-train"
+    username: root
+    password: root
+  jpa:
+    hibernate:
+      ddl-auto: update
+
