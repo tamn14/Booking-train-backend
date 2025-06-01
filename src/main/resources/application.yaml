@@ -8,4 +8,23 @@ spring:
   jpa:
     hibernate:
       ddl-auto: update
-
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://localhost:8081/realms/your-realm-name
+      client:
+        registration:
+          keycloak:
+            client-id: your-client-id
+            client-secret: your-client-secret
+            authorization-grant-type: authorization_code
+            redirect-uri: "{baseUrl}/login/oauth2/code/{registrationId}"
+            scope: openid, profile, email
+        provider:
+          keycloak:
+            issuer-uri: http://localhost:8081/realms/your-realm-name
+            authorization-uri: http://localhost:8081/realms/your-realm-name/protocol/openid-connect/auth
+            token-uri: http://localhost:8081/realms/your-realm-name/protocol/openid-connect/token
+            user-info-uri: http://localhost:8081/realms/your-realm-name/protocol/openid-connect/userinfo
+            user-name-attribute: preferred_username
