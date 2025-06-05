@@ -2,6 +2,8 @@ package com.example.booking_train_backend.DTO.Request;
 
 import lombok.*;
 
+import java.time.LocalDateTime;
+
 @Setter
 @Getter
 @AllArgsConstructor
@@ -14,4 +16,8 @@ public class BookingRequest {
     private String trainStationEnd ;
     private int trainJourney  ;
     private String carriageClass ;
+    private LocalDateTime bookingDate ;
+    private int amountPaid  ;
+    private int ticketNo ;
+    private int seatNo;
 }

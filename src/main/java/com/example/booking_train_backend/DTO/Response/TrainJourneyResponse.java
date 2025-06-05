@@ -1,5 +1,6 @@
 package com.example.booking_train_backend.DTO.Response;
 
+import com.example.booking_train_backend.DTO.Request.TrainTripRequest;
 import lombok.*;
 
 import java.util.ArrayList;
@@ -15,6 +16,7 @@ public class TrainJourneyResponse {
     private List<JourneyStationResponse> journeyStationRespones = new ArrayList<>() ;
     private List<JourneyCarriageResponse> journeyCarriageResponses = new ArrayList<>();
     private String schedule ;
+    private List<TrainTripResponse> trainTripResponse ;
 
 
 }

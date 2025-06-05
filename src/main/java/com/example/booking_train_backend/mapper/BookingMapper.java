@@ -16,6 +16,10 @@ public interface BookingMapper {
     @Mapping(source = "trainStationEnd", target = "trainStationEnd.stationName")
     @Mapping(source = "trainJourney", target = "trainJourney.id")
     @Mapping(source = "carriageClass", target = "carriageClass.id")
+    @Mapping(source = "bookingDate", target = "bookingDate")
+    @Mapping(source = "amountPaid", target = "amountPaid")
+    @Mapping(source = "ticketNo", target = "ticketNo")
+    @Mapping(source = "seatNo", target = "seatNo")
     Booking toEntity(BookingRequest request);
 
     // Mapping from Booking entity to BookingResponse
@@ -25,5 +29,9 @@ public interface BookingMapper {
     @Mapping(source = "trainStationEnd.stationName", target = "trainStationEnd")
     @Mapping(source = "trainJourney.id", target = "trainJourney")
     @Mapping(source = "carriageClass.id", target = "carriageClass")
+    @Mapping(source = "bookingDate", target = "bookingDate")
+    @Mapping(source = "amountPaid", target = "amountPaid")
+    @Mapping(source = "ticketNo", target = "ticketNo")
+    @Mapping(source = "seatNo", target = "seatNo")
     BookingResponse toResponse(Booking booking);
 }

@@ -15,5 +15,7 @@ public class TrainJourneyRequest {
     private List<JourneyStationRequest> journeyStationRequests = new ArrayList<>() ;
     private List<JourneyCarriageRequest> journeyCarriageRequests = new ArrayList<>() ;
     private int schedule ;
+    private List<TrainTripRequest> trainTripRequest ;
+
 
 }

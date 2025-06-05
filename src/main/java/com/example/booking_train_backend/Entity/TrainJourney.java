@@ -73,5 +73,18 @@ public class TrainJourney {
     @JoinColumn(name = "scheduleId")
     private Schedule schedule ;
 
+    @OneToMany(
+            fetch = FetchType.LAZY ,
+            cascade = {
+                    CascadeType.DETACH ,
+                    CascadeType.MERGE ,
+                    CascadeType.PERSIST  ,
+                    CascadeType.REFRESH
+            } ,
+            mappedBy =  "trainJourney"
+
+    )
+    private List<TrainTrip> trainTrips = new ArrayList<>() ;
+
 
 }

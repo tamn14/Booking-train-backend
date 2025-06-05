@@ -12,18 +12,22 @@ import org.mapstruct.Mapping;
 @Mapper(componentModel = "spring", uses = {
         JourneyStationMapper.class,
         JourneyCarriageMapper.class,
-        ScheduleMapper.class
+        ScheduleMapper.class,
+        TrainTripMapper.class
+
 })
 public interface TrainJourneyMapper {
     // mapping from request to entity
     @Mapping(source = "schedule", target = "schedule.id")
     @Mapping(source = "journeyStationRequests", target = "journeyStations")
     @Mapping(source = "journeyCarriageRequests", target = "journeyCarriages")
+    @Mapping(source = "trainTripRequest", target = "trainTrips")
     TrainJourney toEntity(TrainJourneyRequest request);
 
     // Mapping từ Entity -> Response DTO
     @Mapping(source = "schedule.id", target = "schedule")
     @Mapping(source = "journeyStations", target = "journeyStationRespones")
     @Mapping(source = "journeyCarriages", target = "journeyCarriageResponses")
+    @Mapping(source = "trainTrips", target = "trainTripResponse")
     TrainJourneyResponse toDTO(TrainJourney trainJourney);
 }
