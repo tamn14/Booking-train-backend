@@ -22,7 +22,7 @@ public class Booking {
             cascade = {
                     CascadeType.DETACH ,
                     CascadeType.PERSIST ,
-                    CascadeType.DETACH ,
+                    CascadeType.MERGE ,
                     CascadeType.REFRESH
             }
 
@@ -35,7 +35,7 @@ public class Booking {
             cascade = {
                     CascadeType.DETACH ,
                     CascadeType.PERSIST ,
-                    CascadeType.DETACH ,
+                    CascadeType.MERGE ,
                     CascadeType.REFRESH
             }
 
@@ -48,7 +48,7 @@ public class Booking {
             cascade = {
                     CascadeType.DETACH ,
                     CascadeType.PERSIST ,
-                    CascadeType.DETACH ,
+                    CascadeType.MERGE ,
                     CascadeType.REFRESH
             }
 
@@ -61,7 +61,7 @@ public class Booking {
             cascade = {
                     CascadeType.DETACH ,
                     CascadeType.PERSIST ,
-                    CascadeType.DETACH ,
+                    CascadeType.MERGE ,
                     CascadeType.REFRESH
             }
 
@@ -74,7 +74,7 @@ public class Booking {
             cascade = {
                     CascadeType.DETACH ,
                     CascadeType.PERSIST ,
-                    CascadeType.DETACH ,
+                    CascadeType.MERGE ,
                     CascadeType.REFRESH
             }
 
@@ -87,7 +87,7 @@ public class Booking {
             cascade = {
                     CascadeType.DETACH ,
                     CascadeType.PERSIST ,
-                    CascadeType.DETACH ,
+                    CascadeType.MERGE ,
                     CascadeType.REFRESH
             }
 

@@ -7,9 +7,6 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class JourneyCarriageRequest {
-//    private int trainJourneyId ;
-    private int carriageClass ;
-    private int position ;
-
+public class TrainStationRequest {
+    private String name ;
 }

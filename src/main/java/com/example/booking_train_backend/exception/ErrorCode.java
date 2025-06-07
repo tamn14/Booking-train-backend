@@ -17,6 +17,7 @@ public enum ErrorCode {
     TRAIN_STATION_NOT_EXISTED(1007,"Train station not existed" ,  HttpStatus.NOT_FOUND),
     STATUS_NOT_EXISTED(1008,"Status not existed" ,  HttpStatus.NOT_FOUND),
     CARRIAGE_CLASS_NOT_EXISTED(1009,"Carriage not existed" ,  HttpStatus.NOT_FOUND),
+    SCHEDULE_NOT_EXISTED(1011,"Carriage not existed" ,  HttpStatus.NOT_FOUND),
     TRAIN_JOURNEY_NOT_EXISTED(1010,"Train journey not existed" ,  HttpStatus.NOT_FOUND);
 
     ErrorCode(int code, String message, HttpStatusCode statusCode) {

@@ -17,12 +17,12 @@ public class JourneyStation {
     private int stopOrder ;
     private LocalDateTime departureTime ;
 
-    @MapsId("journeyId")
+    @MapsId("trainStationId")
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "trainStationId", nullable = false)
     private TrainStation trainStation ;
 
-    @MapsId("stationId")
+    @MapsId("trainJourneyId")
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "trainJourneyId", nullable = false)
     private TrainJourney trainJourney ;

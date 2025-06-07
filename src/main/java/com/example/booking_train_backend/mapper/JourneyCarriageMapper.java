@@ -9,7 +9,7 @@ import org.mapstruct.Mapping;
 @Mapper(componentModel = "spring")
 public interface JourneyCarriageMapper {
     // mapping from request to entity
-    @Mapping(source = "trainJourneyId", target = "trainJourney.id")
+//    @Mapping(source = "trainJourneyId", target = "trainJourney.id")
     @Mapping(source = "carriageClass", target = "carriageClass.id")
     @Mapping(source = "position", target = "position")
     JourneyCarriage toEntity (JourneyCarriageRequest request) ;

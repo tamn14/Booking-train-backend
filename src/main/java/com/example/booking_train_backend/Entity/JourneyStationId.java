@@ -10,7 +10,7 @@ import lombok.*;
 @EqualsAndHashCode
 @Embeddable
 public class JourneyStationId {
-    private int journeyId;
-    private int stationId;
+    private int trainJourneyId;
+    private int trainStationId;
 
 }

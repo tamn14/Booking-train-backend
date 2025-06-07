@@ -65,7 +65,7 @@ public class TrainJourney {
             cascade = {
                     CascadeType.DETACH ,
                     CascadeType.PERSIST ,
-                    CascadeType.DETACH ,
+                    CascadeType.MERGE ,
                     CascadeType.REFRESH
             }
 

@@ -13,7 +13,7 @@ public class JourneyCarriage {
     @EmbeddedId
     private JourneyCarriageId id ;
 
-    @MapsId("journeyId")
+    @MapsId("trainJourneyId")
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "trainJourneyId", nullable = false)
     private TrainJourney trainJourney ;

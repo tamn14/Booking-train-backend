@@ -12,8 +12,8 @@ import org.mapstruct.Mapping;
 @Mapper(componentModel = "spring")
 public interface JourneyStationMapper {
     // mapping from request to entity
-    @Mapping(source = "journeyId", target = "trainStation.id")
-    @Mapping(source = "stationId", target = "trainJourney.id")
+//    @Mapping(source = "journeyId", target = "trainStation.id")
+    @Mapping(source = "trainStationId", target = "trainJourney.id")
     @Mapping(source = "stopOrder", target = "stopOrder")
     @Mapping(source = "departureTime", target = "departureTime")
     JourneyStation toEntity (JourneyStationRequest request) ;

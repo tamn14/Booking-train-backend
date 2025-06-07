@@ -10,8 +10,8 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @Builder
 public class JourneyStationRequest {
-    private int journeyId ;
-    private int stationId ;
+//    private int journeyId ;
+    private int trainStationId ;
     private int stopOrder ;
     private LocalDateTime departureTime ;
 
