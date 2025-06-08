@@ -17,5 +17,5 @@ public interface CarriageClassMapper {
     // Mapping from entity to DTO
     @Mapping(source = "name", target = "className")
     @Mapping(source = "seatingCapacity", target = "seatingCapacity")
-    CarriageClassResponse toEntity(CarriageClass request);
+    CarriageClassResponse toDTO(CarriageClass request);
 }

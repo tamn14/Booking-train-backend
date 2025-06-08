@@ -7,9 +7,8 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class CarriagePriceRequest {
-    private  String carriageClass ;
-    private String scheduleName  ;
+public class CarriagePriceUpdateRequest {
+
     private int price ;
 
 

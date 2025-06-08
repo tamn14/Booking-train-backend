@@ -5,5 +5,5 @@ import com.example.booking_train_backend.DTO.Response.ScheduleResponse;
 
 public interface ScheduleService {
     public ScheduleResponse add(ScheduleRequest request) ;
-    public ScheduleResponse update(ScheduleRequest request) ;
+    public ScheduleResponse update(ScheduleRequest request , int id) ;
 }

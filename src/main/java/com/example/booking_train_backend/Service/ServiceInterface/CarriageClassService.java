@@ -8,6 +8,6 @@ import java.util.List;
 
 public interface CarriageClassService {
     public CarriageClassResponse add (CarriageClassRequest request) ;
-    public CarriageClassResponse update (CarriageClassRequest request) ;
+    public CarriageClassResponse update (CarriageClassRequest request , int id) ;
     public List<CarriageClassResponse> findAll() ;
 }

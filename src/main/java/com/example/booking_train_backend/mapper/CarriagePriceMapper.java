@@ -13,8 +13,8 @@ import org.mapstruct.Mapping;
 })
 public interface CarriagePriceMapper {
     // Mapping from Request to Entity
-    @Mapping(source = "scheduleId", target = "schedule.id")
-    @Mapping(source = "carriageClassId", target = "carriageClass.id")
+    @Mapping(source = "scheduleName", target = "schedule.name")
+    @Mapping(source = "carriageClass", target = "carriageClass.name")
     @Mapping(source = "price", target = "price")
     CarriagePrice toEntity(CarriagePriceRequest request);
 
