@@ -23,16 +23,16 @@ import java.util.List;
 public class BookingServiceImplement implements BookingService {
     private BookingMapper bookingMapper ;
     private BookingRepo bookingRepo ;
-    private PassengerRepo passengerRepo ;
+    private UsersRepo usersRepo;
     private BookingStatusRepo bookingStatusRepo ;
     private TrainStationRepo trainStationRepo ;
     private TrainJourneyRepo trainJourneyRepo ;
     private CarriageClassRepo carriageClassRepo ;
     @Autowired
-    public BookingServiceImplement(BookingMapper bookingMapper, BookingRepo bookingRepo, PassengerRepo passengerRepo, BookingStatusRepo bookingStatusRepo, TrainStationRepo trainStationRepo, TrainJourneyRepo trainJourneyRepo, CarriageClassRepo carriageClassRepo) {
+    public BookingServiceImplement(BookingMapper bookingMapper, BookingRepo bookingRepo, UsersRepo usersRepo, BookingStatusRepo bookingStatusRepo, TrainStationRepo trainStationRepo, TrainJourneyRepo trainJourneyRepo, CarriageClassRepo carriageClassRepo) {
         this.bookingMapper = bookingMapper;
         this.bookingRepo = bookingRepo;
-        this.passengerRepo = passengerRepo;
+        this.usersRepo = usersRepo;
         this.bookingStatusRepo = bookingStatusRepo;
         this.trainStationRepo = trainStationRepo;
         this.trainJourneyRepo = trainJourneyRepo;
@@ -41,8 +41,8 @@ public class BookingServiceImplement implements BookingService {
 
     @Override
     public BookingResponse addBooking(BookingRequest request) {
-        Passenger passenger = passengerRepo.findById(request.getPassenger())
-                .orElseThrow(()-> new AppException(ErrorCode.PASSENGER_NOT_EXISTED)) ;
+        Users passenger = usersRepo.findById(request.getPassenger())
+                .orElseThrow(()-> new AppException(ErrorCode.USER_NOT_EXISTED)) ;
         TrainStation trainStationStart = trainStationRepo.findByStationName(request.getTrainStationStart()) ;
         TrainStation trainStationEnd = trainStationRepo.findByStationName(request.getTrainStationEnd()) ;
         if(trainStationStart == null || trainStationEnd == null) {
@@ -60,7 +60,7 @@ public class BookingServiceImplement implements BookingService {
         booking.setBookingStatus(bookingStatus);
         bookingStatus.getBookings().add(booking) ;
         // set hai chieu passenger va booking
-        booking.setPassenger(passenger);
+        booking.setUsers(passenger);
         passenger.getBookings().add(booking) ;
         // set hai chieu train station va booking
         booking.setTrainStationStart(trainStationStart);

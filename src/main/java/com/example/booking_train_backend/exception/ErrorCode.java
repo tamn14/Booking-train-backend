@@ -9,7 +9,7 @@ import org.springframework.http.HttpStatusCode;
 public enum ErrorCode {
     UNCATEGORIZED_EXCEPTION(9999, "Uncategorized error", HttpStatus.INTERNAL_SERVER_ERROR),
     INVALID_KEY(1001, "Uncategorized error", HttpStatus.BAD_REQUEST),
-    PASSENGER_NOT_EXISTED(1002, "Passenger not existed", HttpStatus.BAD_REQUEST),
+    USER_NOT_EXISTED(1002, "user not existed", HttpStatus.BAD_REQUEST),
     UNAUTHENTICATED(1003, "Unauthenticated", HttpStatus.UNAUTHORIZED),
     UNAUTHORIZED(1004, "You do not have permission", HttpStatus.FORBIDDEN),
     BOOKING_NOT_FOUND(1005,"Booking not existed" ,HttpStatus.NOT_FOUND ),

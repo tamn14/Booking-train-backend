@@ -27,8 +27,8 @@ public class Booking {
             }
 
     )
-    @JoinColumn(name = "passengerId")
-    private Passenger passenger ;
+    @JoinColumn(name = "usersId")
+    private Users users ;
 
     @ManyToOne (
             fetch = FetchType.LAZY ,

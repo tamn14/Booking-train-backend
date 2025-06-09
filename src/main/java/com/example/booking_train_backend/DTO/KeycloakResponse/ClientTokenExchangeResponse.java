@@ -9,11 +9,8 @@ import lombok.experimental.FieldDefaults;
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class ClientTokenExchangeResponse {
-    String accessToken;
-    String refreshToken;
-    String expiresIn;
-    String refreshExpiresIn;
-    String tokenType;
-    String idToken;
+    String grant_type;
+    String client_id;
+    String client_secret;
     String scope;
 }

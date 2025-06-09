@@ -9,5 +9,10 @@ import lombok.experimental.FieldDefaults;
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class UserAccessTokenExchangeParam {
-
+    String grant_type;
+    String client_id;
+    String client_secret;
+    String username;
+    String password;
+    String scope;
 }

@@ -1,4 +1,4 @@
-package com.example.booking_train_backend.DTO.Request;
+package com.example.booking_train_backend.DTO.Response;
 
 import lombok.*;
 
@@ -7,10 +7,9 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class PassengerRequest {
+public class UsersResponse {
     private String firstName ;
     private String lastName ;
-    private String phone ;
-
+    private  String phone ;
 
 }

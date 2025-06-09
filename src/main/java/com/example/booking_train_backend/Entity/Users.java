@@ -15,9 +15,9 @@ import java.util.List;
 @NoArgsConstructor
 @Entity
 @Table(name = "passenger" , uniqueConstraints = {
-        @UniqueConstraint(columnNames = "phone")
+        @UniqueConstraint(columnNames = "email")
 })
-public class Passenger {
+public class Users {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY )
     private int id  ;
@@ -25,9 +25,10 @@ public class Passenger {
     private String userName;
     private String lastName  ;
     private String firstName ;
-    private String email ;
     @Column(nullable = false , unique = true)
-    private String phone ;
+    private String email ;
+
+
     @OneToMany(
             fetch = FetchType.LAZY ,
             cascade = {
@@ -36,9 +37,8 @@ public class Passenger {
                     CascadeType.PERSIST  ,
                     CascadeType.REFRESH
             } ,
-            mappedBy =  "passenger"
+            mappedBy =  "users"
 
     )
     private List<Booking> bookings = new ArrayList<>() ;
-
 }
