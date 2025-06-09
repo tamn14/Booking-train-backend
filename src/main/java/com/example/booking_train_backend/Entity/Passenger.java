@@ -21,8 +21,11 @@ public class Passenger {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY )
     private int id  ;
+    private String userKeycloakId;
+    private String userName;
     private String lastName  ;
     private String firstName ;
+    private String email ;
     @Column(nullable = false , unique = true)
     private String phone ;
     @OneToMany(
