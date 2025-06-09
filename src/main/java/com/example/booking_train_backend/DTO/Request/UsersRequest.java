@@ -10,7 +10,7 @@ import lombok.*;
 public class UsersRequest {
     private String firstName ;
     private String lastName ;
-    private String phone ;
+    private String email ;
 
 
 }

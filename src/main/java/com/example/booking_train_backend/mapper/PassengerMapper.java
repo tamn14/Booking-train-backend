@@ -11,13 +11,13 @@ public interface PassengerMapper {
     // mapping from request to entity
     @Mapping(source = "firstName", target = "firstName")
     @Mapping(source = "lastName", target = "lastName")
-    @Mapping(source = "phone", target = "phone")
+    @Mapping(source = "email", target = "email")
     Users toEntity (UsersRequest request) ;
 
 
     // mapping from entity to DTO
     @Mapping(source = "firstName", target = "firstName")
     @Mapping(source = "lastName", target = "lastName")
-    @Mapping(source = "phone", target = "phone")
+    @Mapping(source = "email", target = "email")
     UsersResponse toDTO (Users users) ;
 }

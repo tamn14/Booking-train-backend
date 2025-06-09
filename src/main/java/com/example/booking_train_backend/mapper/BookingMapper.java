@@ -10,7 +10,7 @@ import org.mapstruct.Mapping;
 public interface BookingMapper {
 
     // Mapping from BookingRequest to Booking entity
-    @Mapping(source = "passenger", target = "passenger.id")
+    @Mapping(source = "passenger", target = "users.id")
     @Mapping(source = "bookingStatus", target = "bookingStatus.id")
     @Mapping(source = "trainStationStart", target = "trainStationStart.stationName")
     @Mapping(source = "trainStationEnd", target = "trainStationEnd.stationName")
@@ -23,7 +23,7 @@ public interface BookingMapper {
     Booking toEntity(BookingRequest request);
 
     // Mapping from Booking entity to BookingResponse
-    @Mapping(source = "passenger", target = "passenger")
+    @Mapping(source = "users", target = "passenger")
     @Mapping(source = "bookingStatus.name", target = "bookingStatus")
     @Mapping(source = "trainStationStart.stationName", target = "trainStationStart")
     @Mapping(source = "trainStationEnd.stationName", target = "trainStationEnd")
