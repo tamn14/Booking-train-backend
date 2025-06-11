@@ -21,3 +21,4 @@ idp:
   url: http://localhost:8081
   client-id: client_Id
   client-secret: Client-secret
+  realm : security-keycloak
