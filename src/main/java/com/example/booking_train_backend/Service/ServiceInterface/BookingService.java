@@ -13,6 +13,6 @@ public interface BookingService {
     public BookingResponse findBooking( int id ) ;
     public void deleteBooking(int id) ;
     public List<BookingResponse> findAll() ;
-//    public List<BookingResponse> getMyBooking() ;
+    public List<BookingResponse> getMyBooking() ;
 
 }

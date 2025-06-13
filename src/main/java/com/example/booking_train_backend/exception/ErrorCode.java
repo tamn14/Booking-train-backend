@@ -17,10 +17,13 @@ public enum ErrorCode {
     TRAIN_STATION_NOT_EXISTED(1007,"Train station not existed" ,  HttpStatus.NOT_FOUND),
     STATUS_NOT_EXISTED(1008,"Status not existed" ,  HttpStatus.NOT_FOUND),
     CARRIAGE_CLASS_NOT_EXISTED(1009,"Carriage class not existed" ,  HttpStatus.NOT_FOUND),
-    CARRIAGE_PRICE_NOT_EXISTED(1013,"Carriage price not existed" ,  HttpStatus.NOT_FOUND),
+    CARRIAGE_PRICE_NOT_EXISTED(1014,"Carriage price not existed" ,  HttpStatus.NOT_FOUND),
     CARRIAGE_CLASS_EXISTED(1012,"Carriage class is existed" ,  HttpStatus.NOT_FOUND),
-    SCHEDULE_NOT_EXISTED(1011,"Schedule not existed" ,  HttpStatus.NOT_FOUND),
+    SCHEDULE_NOT_EXISTED(1013,"Schedule not existed" ,  HttpStatus.NOT_FOUND),
     SCHEDULE_EXISTED(1011,"Schedule  existed" ,  HttpStatus.NOT_FOUND),
+    USER_EXISTED(1015, "User already existed", HttpStatus.CONFLICT),
+    EMAIL_EXISTED(1016, "Email already existed", HttpStatus.CONFLICT),
+    USERNAME_IS_MISSING(1017, "Username is missing", HttpStatus.BAD_REQUEST),
     TRAIN_JOURNEY_NOT_EXISTED(1010,"Train journey not existed" ,  HttpStatus.NOT_FOUND);
 
     ErrorCode(int code, String message, HttpStatusCode statusCode) {

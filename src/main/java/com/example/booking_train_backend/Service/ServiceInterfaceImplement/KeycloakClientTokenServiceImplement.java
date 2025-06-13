@@ -5,11 +5,13 @@ import com.example.booking_train_backend.DTO.KeyloakRequest.ClientTokentExchange
 import com.example.booking_train_backend.Properties.IdpProperties;
 import com.example.booking_train_backend.Repo.IdentityProviderRepo;
 import com.example.booking_train_backend.Service.ServiceInterface.KeycloakClientTokenService;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
 @Service
+@Transactional
 public class KeycloakClientTokenServiceImplement implements KeycloakClientTokenService {
     private IdpProperties idpProperties ;
     private IdentityProviderRepo identityProviderRepo ;

@@ -12,6 +12,9 @@ import com.example.booking_train_backend.mapper.BookingMapper;
 import jakarta.transaction.Transactional;
 //import lombok.var;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.jwt.Jwt;
+import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.stereotype.Service;
 
 import java.time.Duration;
@@ -152,25 +155,27 @@ public class BookingServiceImplement implements BookingService {
         return bookingRepo.findAll().stream().map(bookingMapper :: toResponse).toList() ;
     }
 
-//    private String getCurrentUsername() {
-//        var authentication = SecurityContextHolder.getContext().getAuthentication();
-//        if (authentication instanceof JwtAuthenticationToken token) {
-//            Jwt jwt = token.getToken();
-//            return jwt.getClaimAsString("preferred_username");
-//        }
-//        throw new AppException(ErrorCode.UNAUTHORIZED);
-//    }
-//
-//    @Override
-//    public List<BookingResponse> getMyBooking() {
-//        String username = getCurrentUsername();
-//
-//        Passenger passenger = passengerRepo.findByUsername(username)
-//                .orElseThrow(() -> new AppException(ErrorCode.PASSENGER_NOT_EXISTED));
-//
-//        return passenger.getBookings().stream()
-//                .map(bookingMapper::toResponse)
-//                .toList();
-//
-//    }
+    private String getCurrentUsername() {
+        var authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication instanceof JwtAuthenticationToken token) {
+            Jwt jwt = token.getToken();
+            return jwt.getClaimAsString("preferred_username");
+        }
+        throw new AppException(ErrorCode.UNAUTHORIZED);
+    }
+
+    @Override
+    public List<BookingResponse> getMyBooking() {
+        String username = getCurrentUsername();
+
+        Users passenger = usersRepo.findByUserName(username) ;
+        if(passenger == null) {
+            throw new AppException(ErrorCode.USER_NOT_EXISTED) ;
+        }
+
+        return passenger.getBookings().stream()
+                .map(bookingMapper::toResponse)
+                .toList();
+
+    }
 }

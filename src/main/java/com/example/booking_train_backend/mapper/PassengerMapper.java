@@ -12,6 +12,7 @@ public interface PassengerMapper {
     @Mapping(source = "firstName", target = "firstName")
     @Mapping(source = "lastName", target = "lastName")
     @Mapping(source = "email", target = "email")
+    @Mapping(source = "userName", target = "userName")
     Users toEntity (UsersRequest request) ;
 
 
