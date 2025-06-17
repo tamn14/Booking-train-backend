@@ -45,7 +45,7 @@ public class CarriageClassServiceImplement implements CarriageClassService {
     }
 
     @Override
-    public CarriageClassResponse update(CarriageClassRequest request , int id) {
+    public CarriageClassResponse updateCarriageClass(CarriageClassRequest request , int id) {
         CarriageClass carriageClassUpdate = carriageClassRepo.findById(id)
                 .orElseThrow(()-> new AppException(ErrorCode.CARRIAGE_CLASS_NOT_EXISTED)) ;
         // cap nhat lai thong tin carriage class //

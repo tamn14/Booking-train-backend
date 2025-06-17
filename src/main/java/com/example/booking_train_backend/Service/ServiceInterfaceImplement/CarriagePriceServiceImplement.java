@@ -34,7 +34,7 @@ public class CarriagePriceServiceImplement implements CarriagePriceService {
 
 
     @Override
-    public CarriagePriceResponse add(CarriagePriceRequest request) {
+    public CarriagePriceResponse addCarriagePrice(CarriagePriceRequest request) {
         // ----------- KIEM TRA CAC GIA TRI REQUEST ----------------//
         Schedule schedule = scheduleRepo.findByName(request.getScheduleName()) ;
         if(schedule == null) {
@@ -64,9 +64,10 @@ public class CarriagePriceServiceImplement implements CarriagePriceService {
     }
 
     @Override
-    public CarriagePriceResponse update(CarriagePriceUpdateRequest request , int schedule , int carriageClass) {
+    public CarriagePriceResponse updateCarriagePrice(CarriagePriceUpdateRequest request ,int scheduleId , int carriageClassId ) {
         // ----------- KIEM TRA CAC GIA TRI REQUEST ----------------//
-        CarriagePriceId carriagePriceId = new CarriagePriceId(schedule , carriageClass);
+
+        CarriagePriceId carriagePriceId = new CarriagePriceId(scheduleId , carriageClassId);
         CarriagePrice carriagePrice = carriagePriceRepo.findById(carriagePriceId)
                 .orElseThrow(()-> new AppException(ErrorCode.CARRIAGE_PRICE_NOT_EXISTED)) ;
         // cap nhat lai price

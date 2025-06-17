@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -41,4 +42,5 @@ public class Users {
 
     )
     private List<Booking> bookings = new ArrayList<>() ;
+    private LocalDateTime deletedAt;
 }

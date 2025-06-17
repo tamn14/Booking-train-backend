@@ -89,8 +89,8 @@ public class BookingServiceImplement implements BookingService {
     }
 
     @Override
-    public BookingResponse updateBooking(BookingUpdateRequest request) {
-        Booking booking = bookingRepo.findById(request.getId())
+    public BookingResponse updateBooking(BookingUpdateRequest request , int id) {
+        Booking booking = bookingRepo.findById(id)
                 .orElseThrow(()-> new AppException(ErrorCode.BOOKING_NOT_FOUND)) ;
         // booking co ton tai
         // KIEM TRA THONG TIN CAP NHAT

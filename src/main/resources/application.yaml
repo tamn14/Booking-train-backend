@@ -1,12 +1,11 @@
 server:
   port: 8080
-  servlet:
-    context-path: /identity
+
 spring:
   application:
     name: booking-train-backend
   datasource:
-    url: "jdbc:mysql://localhost:3306/booking-train"
+    url: jdbc:mysql://localhost:3306/Booking_Train
     username: root
     password: root
   jpa:
@@ -17,8 +16,29 @@ spring:
       resourceserver:
         jwt:
           issuer-uri: http://localhost:8081/realms/booking
+
+bucket4j:
+  enabled: true
+  filters:
+    - cache-name: localCache
+      url: /api/auth/login
+      rate-limits:
+        - bandwidths:
+            - capacity: 5
+              refill-tokens: 5
+              refill-period: 10
+              refill-unit: seconds
+    - cache-name: localCache
+      url: /api/auth/refresh
+      rate-limits:
+        - bandwidths:
+            - capacity: 5
+              refill-tokens: 5
+              refill-period: 10
+              refill-unit: seconds
+
 idp:
   url: http://localhost:8081
   client-id: client_Id
   client-secret: Client-secret
-  realm : security-keycloak
+  realm: security-keycloak

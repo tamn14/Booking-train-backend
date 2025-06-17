@@ -8,7 +8,7 @@ import com.example.booking_train_backend.Entity.CarriagePriceId;
 import java.util.List;
 
 public interface CarriagePriceService {
-    public CarriagePriceResponse add(CarriagePriceRequest request) ;
-    public CarriagePriceResponse update (CarriagePriceUpdateRequest request , int schedule , int carriageClass) ;
+    public CarriagePriceResponse addCarriagePrice(CarriagePriceRequest request) ;
+    public CarriagePriceResponse updateCarriagePrice (CarriagePriceUpdateRequest request ,int scheduleId , int carriageClassId ) ;
 
 }

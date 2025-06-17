@@ -9,7 +9,7 @@ import java.util.List;
 
 public interface BookingService {
     public BookingResponse addBooking(BookingRequest request) ;
-    public BookingResponse updateBooking(BookingUpdateRequest request) ;
+    public BookingResponse updateBooking(BookingUpdateRequest request , int id) ;
     public BookingResponse findBooking( int id ) ;
     public void deleteBooking(int id) ;
     public List<BookingResponse> findAll() ;

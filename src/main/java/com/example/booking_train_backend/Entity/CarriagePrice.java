@@ -16,11 +16,11 @@ public class CarriagePrice {
 
     @MapsId("scheduleId")
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "scheduleId", nullable = false)
+    @JoinColumn(name = "schedule_Id")
     private Schedule schedule ;
 
     @MapsId("carriageClassId")
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "carriageClassId", nullable = false)
+    @JoinColumn(name = "carriage_class_Id")
     private CarriageClass carriageClass ;
 }

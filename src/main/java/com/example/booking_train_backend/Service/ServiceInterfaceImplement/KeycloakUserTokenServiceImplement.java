@@ -12,6 +12,9 @@ import com.example.booking_train_backend.Properties.IdpProperties;
 import com.example.booking_train_backend.Repo.IdentityProviderRepo;
 import com.example.booking_train_backend.Repo.UsersRepo;
 import com.example.booking_train_backend.Service.ServiceInterface.AuthenticationService;
+import com.example.booking_train_backend.Service.ServiceInterface.TokenBlacklistService;
+import com.example.booking_train_backend.exception.AppException;
+import com.example.booking_train_backend.exception.ErrorCode;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -23,21 +26,35 @@ import java.util.concurrent.ConcurrentHashMap;
 @Service
 @Transactional
 public class KeycloakUserTokenServiceImplement implements AuthenticationService {
-    private UsersRepo usersRepo ;;
-    private IdentityProviderRepo identityProviderRepo ;
-    private IdpProperties idpProperties ;
+    private final UsersRepo usersRepo ;
+    private final IdentityProviderRepo identityProviderRepo ;
+    private final IdpProperties idpProperties ;
+    private final TokenBlacklistService tokenBlacklistService ;
     @Autowired
     public KeycloakUserTokenServiceImplement(UsersRepo usersRepo,
                                              IdentityProviderRepo identityProviderRepo,
-                                             IdpProperties idpProperties) {
+                                             IdpProperties idpProperties,
+                                             TokenBlacklistService tokenBlacklistService) {
         this.usersRepo = usersRepo;
         this.identityProviderRepo = identityProviderRepo;
         this.idpProperties = idpProperties;
+        this.tokenBlacklistService = tokenBlacklistService;
     }
-    // ten dang nhap va token tuong ung
-    private final Map<String, TokenInfo> tokenStore = new ConcurrentHashMap<>();
+
+
+    private void validateActiveUser(String username) {
+        var user = usersRepo.findByUserName(username);
+        if (user == null || user.getDeletedAt() != null) {
+            throw new AppException(ErrorCode.USER_NOT_EXISTED);
+        }
+
+    }
+
 
     private TokenInfo requestNewToken(LoginRequest loginRequest) {
+        // kiem tra neu user da bi xoa trong db (xoa mem) thi khong duoc login
+        validateActiveUser(loginRequest.getUserName());
+        // tao tokenInfo
         UserAccessTokenExchangeParam param = UserAccessTokenExchangeParam.builder()
                 .grant_type("password")
                 .client_id(idpProperties.getClientId())
@@ -58,12 +75,7 @@ public class KeycloakUserTokenServiceImplement implements AuthenticationService 
 
     @Override
     public AuthenticationResponse login(LoginRequest loginRequest) {
-        String userName = loginRequest.getUserName();
-        TokenInfo tokenInfo = tokenStore.get(userName) ;
-        if(tokenInfo == null || tokenInfo.getTokenExpiry() == null || Instant.now().isAfter(tokenInfo.getTokenExpiry().minusSeconds(60))){
-            tokenInfo = requestNewToken(loginRequest);
-            tokenStore.put(userName , tokenInfo) ;
-        }
+        TokenInfo tokenInfo = requestNewToken(loginRequest);
 
         return AuthenticationResponse.builder()
                 .accessToken(tokenInfo.getCachedToken())
@@ -78,22 +90,16 @@ public class KeycloakUserTokenServiceImplement implements AuthenticationService 
 
     @Override
     public String getAccessToken(LoginRequest loginRequest) {
-        String userName = loginRequest.getUserName();
-        TokenInfo tokenInfo = tokenStore.get(userName) ;
-        if(tokenInfo == null || tokenInfo.getTokenExpiry() == null || Instant.now().isAfter(tokenInfo.getTokenExpiry().minusSeconds(60))){
-            tokenInfo = requestNewToken(loginRequest);
-            tokenStore.put(userName , tokenInfo) ;
-        }
-        return tokenInfo.getCachedToken() ;
+        return requestNewToken(loginRequest).getCachedToken();
     }
 
 
 
     @Override
-    public TokenInfo refreshToken(RefreshRequest refreshRequest) {
+    public AuthenticationResponse refreshToken(RefreshRequest refreshRequest) {
         String refreshToken = refreshRequest.getToken();
         if (refreshToken == null || refreshToken.isEmpty()) {
-            throw new IllegalArgumentException("Refresh token must not be empty");
+            throw new AppException(ErrorCode.UNCATEGORIZED_EXCEPTION);
         }
 
         UserRefreshTokenExchangeParam param = UserRefreshTokenExchangeParam.builder()
@@ -104,28 +110,38 @@ public class KeycloakUserTokenServiceImplement implements AuthenticationService 
                 .build();
 
         UserTokenExchangeResponse response = identityProviderRepo.exchangeUserRefreshToken(idpProperties.getRealm(), param);
-        return new TokenInfo(
+        TokenInfo tokenInfo =  new TokenInfo(
                 response.getAccessToken(),
                 Instant.now().plusSeconds(Long.parseLong(response.getExpiresIn())),
                 response.getRefreshToken(),
                 Instant.now().plusSeconds(Long.parseLong(response.getRefreshExpiresIn()))
         );
+        return AuthenticationResponse.builder()
+                .accessToken(tokenInfo.getCachedToken())
+                .refreshToken(tokenInfo.getRefreshToken())
+                .tokenType("Bearer")
+                .expiresIn(tokenInfo.getTokenExpiry().getEpochSecond() - Instant.now().getEpochSecond())
+                .authenticated(true)
+                .build();
     }
+
 
     @Override
     public void logout(LogoutRequest logoutRequest) {
-        String token = logoutRequest.getToken() ;
-        if(token == null || token.isEmpty()) {
-            throw new IllegalArgumentException("Refresh token must not be empty");
+        String refreshToken = logoutRequest.getRefreshToken();
+        String accessToken = logoutRequest.getAccessToken();
+        if (refreshToken == null || refreshToken.isEmpty()) {
+            throw new AppException(ErrorCode.UNCATEGORIZED_EXCEPTION);
         }
-        // revoke token
+
         identityProviderRepo.revokeUserToken(
                 idpProperties.getRealm(),
                 idpProperties.getClientId(),
                 idpProperties.getClientSecret(),
-                token
+                refreshToken
         );
-        // xoa token khoi cache
-        tokenStore.entrySet().removeIf(entry -> entry.getValue().getCachedToken().equals(token));
+        if (accessToken != null && !accessToken.isEmpty()) {
+            tokenBlacklistService.addToBlacklist(accessToken);
+        }
     }
 }

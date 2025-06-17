@@ -15,12 +15,12 @@ public class JourneyCarriage {
 
     @MapsId("trainJourneyId")
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "trainJourneyId", nullable = false)
+    @JoinColumn(name = "train_journey_Id")
     private TrainJourney trainJourney ;
 
     @MapsId("carriageClassId")
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "carriageClassId", nullable = false)
+    @JoinColumn(name = "carriage_class_Id")
     private CarriageClass carriageClass ;
 
     private int position ;

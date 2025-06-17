@@ -19,12 +19,12 @@ public class JourneyStation {
 
     @MapsId("trainStationId")
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "trainStationId", nullable = false)
+    @JoinColumn(name = "train_station_Id")
     private TrainStation trainStation ;
 
     @MapsId("trainJourneyId")
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "trainJourneyId", nullable = false)
+    @JoinColumn(name = "train_journey_Id")
     private TrainJourney trainJourney ;
 
 }

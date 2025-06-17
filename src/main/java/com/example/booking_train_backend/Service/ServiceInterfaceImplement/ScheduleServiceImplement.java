@@ -27,12 +27,11 @@ public class ScheduleServiceImplement implements ScheduleService {
     @Override
     public ScheduleResponse add(ScheduleRequest request) {
        // ------------------- KIEM TRA REQUEST ----------------//
-        Schedule schedule = scheduleRepo.findByName(request.getName()) ;
-        if(schedule != null) {
+        if( scheduleRepo.findByName(request.getName()) != null) {
             throw new AppException(ErrorCode.SCHEDULE_EXISTED) ;
         }
-        scheduleRepo.save(schedule) ;
-        return scheduleMapper.toDTO(schedule) ;
+        Schedule scheduleAdd = scheduleRepo.save(scheduleMapper.toEntity(request)) ;
+        return scheduleMapper.toDTO(scheduleAdd) ;
     }
 
     @Override

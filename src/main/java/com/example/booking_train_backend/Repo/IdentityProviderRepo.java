@@ -2,16 +2,18 @@ package com.example.booking_train_backend.Repo;
 //----------------- REPO THUC HIEN THAO TAC VOI KEYCLOAK ----------------------- //
 
 import com.example.booking_train_backend.DTO.KeycloakResponse.ClientTokenExchangeResponse;
+import com.example.booking_train_backend.DTO.KeycloakResponse.RoleResponse;
 import com.example.booking_train_backend.DTO.KeycloakResponse.UserTokenExchangeResponse;
 import com.example.booking_train_backend.DTO.KeyloakRequest.*;
 import com.example.booking_train_backend.DTO.Request.UsersUpdateRequest;
 import feign.QueryMap;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Repository;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 @FeignClient(name = "identity-keycloak-client", url = "${idp.url}")
 public interface IdentityProviderRepo {
 
@@ -71,6 +73,20 @@ public interface IdentityProviderRepo {
                      @RequestBody UsersUpdateRequest request
     );
 
+    @GetMapping("/admin/realms/{realm}/roles/{roleName}")
+    RoleResponse getRealmRoleByName(
+            @PathVariable("realm") String realm,
+            @RequestHeader("Authorization") String bearerToken,
+            @PathVariable("roleName") String roleName
+    );
+
+    @PostMapping("/admin/realms/{realm}/users/{userId}/role-mappings/realm")
+    void assignRealmRolesToUser(
+            @PathVariable("realm") String realm,
+            @RequestHeader("Authorization") String bearerToken,
+            @PathVariable("userId") String userId,
+            @RequestBody List<RoleResponse> roles
+    );
 
 
 

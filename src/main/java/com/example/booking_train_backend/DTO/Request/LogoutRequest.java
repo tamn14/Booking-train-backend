@@ -10,5 +10,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 public class LogoutRequest {
-    private  String token;
+    private String accessToken;   // token đang được dùng để gọi API
+    private String refreshToken;  // token để revoke
 }

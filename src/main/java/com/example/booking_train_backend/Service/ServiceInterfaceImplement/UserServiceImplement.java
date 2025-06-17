@@ -6,7 +6,6 @@ import com.example.booking_train_backend.DTO.Request.ChangePasswordRequest;
 import com.example.booking_train_backend.DTO.Request.LoginRequest;
 import com.example.booking_train_backend.DTO.Request.UsersRequest;
 import com.example.booking_train_backend.DTO.Request.UsersUpdateRequest;
-import com.example.booking_train_backend.DTO.Response.LoginResponse;
 import com.example.booking_train_backend.DTO.Response.UsersResponse;
 import com.example.booking_train_backend.Entity.Users;
 import com.example.booking_train_backend.Properties.IdpProperties;
@@ -15,52 +14,56 @@ import com.example.booking_train_backend.Repo.UsersRepo;
 import com.example.booking_train_backend.Service.ServiceInterface.KeycloakClientTokenService;
 import com.example.booking_train_backend.Service.ServiceInterface.AuthenticationService;
 import com.example.booking_train_backend.Service.ServiceInterface.UserService;
+import com.example.booking_train_backend.Util.Extract;
 import com.example.booking_train_backend.exception.AppException;
 import com.example.booking_train_backend.exception.ErrorCode;
 import com.example.booking_train_backend.exception.KeycloakNormalizer;
 import com.example.booking_train_backend.mapper.PassengerMapper;
 import feign.FeignException;
+import jakarta.transaction.RollbackException;
 import jakarta.transaction.Transactional;
-import org.springframework.http.ResponseEntity;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.context.SecurityContextImpl;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
 
+import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Objects;
 
 @Service
 @Transactional
 public class UserServiceImplement implements UserService {
-    private UsersRepo usersRepo ;
-    private IdentityProviderRepo identityProviderRepo ;
-    private PassengerMapper passengerMapper ;
-    private KeycloakClientTokenService keycloakClientTokenService ;
-    private AuthenticationService keycloakUserTokenService ;
-    private IdpProperties idpProperties ;
-    private KeycloakNormalizer keycloakNormalizer ;
-
-
-
-
-
-    @Override
-    public String extractUserId(ResponseEntity<?> responseEntity) {
-        // lay ra Location
-        // Response ma keycloak tra ve gom HTTP va Location vd nhu sau :
-        // HTTP/1.1 201 Created
-        //Location: http://localhost:8080/admin/realms/myrealm/users/1a2b3c4d-5678-90ab-cdef-1234567890ab
-        String Location = Objects.requireNonNull(responseEntity.getHeaders().get("Location").getFirst()) ;
-        // tach theo dau '/'
-        String[] strings = Location.split("/") ;
-        return strings[strings.length-1] ;
+    private final UsersRepo  usersRepo ;
+    private final IdentityProviderRepo identityProviderRepo ;
+    private final PassengerMapper passengerMapper ;
+    private final KeycloakClientTokenService keycloakClientTokenService ;
+    private final AuthenticationService keycloakUserTokenService ;
+    private final IdpProperties idpProperties ;
+    private final KeycloakNormalizer keycloakNormalizer ;
+    private final Extract extract;
+    @Autowired
+    public UserServiceImplement(UsersRepo usersRepo,
+                                IdentityProviderRepo identityProviderRepo,
+                                PassengerMapper passengerMapper,
+                                KeycloakClientTokenService keycloakClientTokenService,
+                                AuthenticationService keycloakUserTokenService,
+                                IdpProperties idpProperties,
+                                KeycloakNormalizer keycloakNormalizer,
+                                Extract extract) {
+        this.usersRepo = usersRepo;
+        this.identityProviderRepo = identityProviderRepo;
+        this.passengerMapper = passengerMapper;
+        this.keycloakClientTokenService = keycloakClientTokenService;
+        this.keycloakUserTokenService = keycloakUserTokenService;
+        this.idpProperties = idpProperties;
+        this.keycloakNormalizer = keycloakNormalizer;
+        this.extract = extract;
     }
-
 
     @Override
     public UsersResponse createUser(UsersRequest request) {
@@ -70,7 +73,7 @@ public class UserServiceImplement implements UserService {
 
         }
         if (usersRepo.existsByEmail(request.getEmail())) {
-            throw new IllegalArgumentException("Email already exists");
+            throw new AppException(ErrorCode.EMAIL_EXISTED) ;
         }
         try {
             // lay access Token de co the goi API keycloak tao nguoi dung
@@ -91,9 +94,21 @@ public class UserServiceImplement implements UserService {
                                     .temporary(false)
                                     .build()))
                             .build());
+            String userKeycloakId = extract.extractUserId(creationResponse) ;
+
+            // gan role cho user vua tao
+            var role = identityProviderRepo.getRealmRoleByName(idpProperties.getRealm(),
+                    "Bearer " + accessToken,
+                    "USER"
+            );
+            identityProviderRepo.assignRealmRolesToUser(
+                    idpProperties.getRealm(),
+                    "Bearer " + accessToken,
+                    userKeycloakId,
+                    List.of(role)
+            );
 
             // luu thong tin vao db
-            String userKeycloakId = extractUserId(creationResponse) ;
             Users users = passengerMapper.toEntity(request) ;
             users.setUserName(request.getUserName());
             users.setUserKeycloakId(userKeycloakId);
@@ -129,15 +144,15 @@ public class UserServiceImplement implements UserService {
 
     @Override
     @PostAuthorize("returnObject.userName == authentication.name")
-    public UsersResponse updateUser(UsersUpdateRequest usersRequest, int id) {
-        Users passenger = usersRepo.findById(id)
-                .orElseThrow(()-> new AppException(ErrorCode.USER_NOT_EXISTED)) ;
+    public UsersResponse updateUser(UsersUpdateRequest usersRequest) {
 
-        // kiem tra co phai cap nhat cho user dang dang nhap khong
+        // lay user hien tai tu phien dang nhap
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String currentUsername = auth.getName();
-        if (!passenger.getUserName().equals(currentUsername)) {
-            throw new AccessDeniedException("You are not allowed to update this user.");
+        // khong can kiem tra user co ton tai khong vi lay tong tin username tu chinh phien dang nhap cua user
+        Users passenger = usersRepo.findByUserName(currentUsername) ;
+        if (passenger == null) {
+            throw new AppException(ErrorCode.USER_NOT_EXISTED);
         }
         // cap nhat thong tin users
         try {
@@ -159,7 +174,7 @@ public class UserServiceImplement implements UserService {
             // kiem tra email
             if (usersRequest.getEmail() != null && !usersRequest.getEmail().equals(passenger.getEmail())) {
                 if (usersRepo.existsByEmail(usersRequest.getEmail())) {
-                    throw new IllegalArgumentException("Email already exists");
+                    throw new AppException(ErrorCode.EMAIL_EXISTED) ;
                 }
                 passenger.setEmail(usersRequest.getEmail());
             }
@@ -175,11 +190,15 @@ public class UserServiceImplement implements UserService {
 
     @Override
     @PreAuthorize("hasRole('USER')")
+    @PostAuthorize("returnObject.userName == authentication.name")
     public UsersResponse getMyInfor() {
         var authentication = SecurityContextHolder.getContext().getAuthentication() ;
         // lay userId cua user dang dang nhap
         String userKeycloakId = authentication.getName() ;
         var user = usersRepo.findByUserKeycloakId(userKeycloakId) ;
+        if (user == null) {
+            throw new AppException(ErrorCode.USER_NOT_EXISTED);
+        }
         return passengerMapper.toDTO(user) ;
 
     }
@@ -187,16 +206,16 @@ public class UserServiceImplement implements UserService {
 
 
     @Override
-    public void changePassword(int userId, ChangePasswordRequest request) {
+    @PreAuthorize("hasRole('USER')")
+    public void changePassword(ChangePasswordRequest request) {
 
-        Users passenger = usersRepo.findById(userId)
-                .orElseThrow(()-> new AppException(ErrorCode.USER_NOT_EXISTED)) ;
-
-        // kiem tra co phai cap nhat cho user dang dang nhap khong
+        // lay user hien tai tu phien dang nhap
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String currentUsername = auth.getName();
-        if (!passenger.getUserName().equals(currentUsername)) {
-            throw new AccessDeniedException("You are not allowed to update this user.");
+        // khong can kiem tra user co ton tai khong vi lay tong tin username tu chinh phien dang nhap cua user
+        Users passenger = usersRepo.findByUserName(currentUsername) ;
+        if (passenger == null) {
+            throw new AppException(ErrorCode.USER_NOT_EXISTED);
         }
 
         // kiem tra co mat khau cu co khop khong
@@ -237,7 +256,8 @@ public class UserServiceImplement implements UserService {
     public void deleteUser(int id) {
         Users passenger = usersRepo.findById(id)
                 .orElseThrow(()-> new AppException(ErrorCode.USER_NOT_EXISTED)) ;
-        usersRepo.deleteById(passenger.getId());
+        passenger.setDeletedAt(LocalDateTime.now());
+        usersRepo.save(passenger);
 
     }
 }
