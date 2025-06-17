@@ -14,10 +14,10 @@ import java.util.concurrent.TimeUnit;
 @Slf4j
 @Service
 public class TokenBlacklistServiceImpl implements TokenBlacklistService {
-    private final RedisTemplate<String, Object> redisTemplate; //redisTemplate duoc dung de doc ghi du lieu tu Redis
+    private final RedisTemplate<String, String> redisTemplate; //redisTemplate duoc dung de doc ghi du lieu tu Redis
     private static final String BLACKLIST_PREFIX = "blacklisted_token:"; // Prefix duoc dung de phan biet token da duoc dua vao blacklist hay chua
     @Autowired
-    public TokenBlacklistServiceImpl(RedisTemplate<String, Object> redisTemplate) {
+    public TokenBlacklistServiceImpl(RedisTemplate<String, String> redisTemplate) {
         this.redisTemplate = redisTemplate;
     }
 

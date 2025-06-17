@@ -23,20 +23,19 @@ import org.springframework.security.web.authentication.www.BasicAuthenticationFi
 public class SercurityConfig {
 
     private final String[] PUBLIC_ENDPOINTS = {"/auth/login", "/auth/register", "/users"};
-    @Autowired
-    private TokenAuthenticationFilter tokenAuthenticationFilter;
+
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder(10);
     }
+
     @Bean
     public TokenAuthenticationFilter tokenAuthenticationFilter(TokenBlacklistService tokenBlacklistService) {
         return new TokenAuthenticationFilter(tokenBlacklistService);
     }
 
-
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
+    public SecurityFilterChain filterChain(HttpSecurity httpSecurity , TokenAuthenticationFilter tokenAuthenticationFilter) throws Exception {
         return httpSecurity
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(HttpMethod.POST, PUBLIC_ENDPOINTS).permitAll()
