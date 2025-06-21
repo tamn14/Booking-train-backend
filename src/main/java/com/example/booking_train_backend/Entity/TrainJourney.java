@@ -12,14 +12,11 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@Table(uniqueConstraints = {
-        @UniqueConstraint(columnNames = "name")
-})
 public class TrainJourney {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id ;
-    @Column(unique = true , nullable = false)
+
     private String name ;
     @OneToMany(
             fetch = FetchType.LAZY ,

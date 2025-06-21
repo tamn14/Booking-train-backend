@@ -9,6 +9,7 @@ import com.example.booking_train_backend.Service.ServiceInterface.TrainStationSe
 import com.example.booking_train_backend.exception.AppException;
 import com.example.booking_train_backend.exception.ErrorCode;
 import com.example.booking_train_backend.mapper.TrainStationMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -17,6 +18,15 @@ import java.util.List;
 public class TrainStationServiceImplement implements TrainStationService {
     private TrainStationRepo trainStationRepo ;
     private TrainStationMapper trainStationMapper ;
+    @Autowired
+    public TrainStationServiceImplement(TrainStationRepo trainStationRepo,
+                                        TrainStationMapper trainStationMapper) {
+        this.trainStationRepo = trainStationRepo;
+        this.trainStationMapper = trainStationMapper;
+    }
+
+
+
     @Override
     public TrainStationResponse addTrainStation(TrainStationRequest request) {
         // Kiem tra train station da ton tai hay chua

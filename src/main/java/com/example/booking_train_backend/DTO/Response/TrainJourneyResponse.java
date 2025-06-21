@@ -13,7 +13,7 @@ import java.util.List;
 @Builder
 public class TrainJourneyResponse {
     private String name;
-    private List<JourneyStationResponse> journeyStationRespones = new ArrayList<>() ;
+    private List<JourneyStationResponse> journeyStationResponses = new ArrayList<>() ;
     private List<JourneyCarriageResponse> journeyCarriageResponses = new ArrayList<>();
     private String schedule ;
     private List<TrainTripResponse> trainTripResponse ;

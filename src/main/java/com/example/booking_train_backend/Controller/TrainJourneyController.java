@@ -27,7 +27,7 @@ public class TrainJourneyController {
     public TrainJourneyController(TrainJourneyService trainJourneyService) {
         this.trainJourneyService = trainJourneyService;
     }
-    @GetMapping("/{name}")
+    @GetMapping("/name/{name}")
     public ApiResponse<List<TrainJourneyResponse>> getTrainJourneyByName(@PathVariable String name) {
         List<TrainJourneyResponse> trainJourneyResponses = trainJourneyService.findByName(name) ;
         return ApiResponse.<List<TrainJourneyResponse>>builder()
@@ -36,7 +36,7 @@ public class TrainJourneyController {
                 .build();
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/id/{id}")
     public ApiResponse<TrainJourneyResponse> getTrainJourneyById(@PathVariable int id) {
         TrainJourneyResponse trainJourneyResponse = trainJourneyService.findById(id) ;
         return ApiResponse.<TrainJourneyResponse>builder()

@@ -26,7 +26,7 @@ public class CarriagePriceController {
         this.carriagePriceService = carriagePriceService;
     }
     @PostMapping
-    public ApiResponse<CarriagePriceResponse> addBooking(@RequestBody @Valid CarriagePriceRequest carriagePriceRequest) {
+    public ApiResponse<CarriagePriceResponse> addCarriagePrice(@RequestBody @Valid CarriagePriceRequest carriagePriceRequest) {
         CarriagePriceResponse carriagePriceResponse = carriagePriceService.addCarriagePrice(carriagePriceRequest) ;
         return ApiResponse.<CarriagePriceResponse>builder()
                 .mess("Success")
@@ -34,7 +34,7 @@ public class CarriagePriceController {
                 .build() ;
     }
     @PutMapping("/{schedualId}/{carriageClassId}")
-    public ApiResponse<CarriagePriceResponse> updateBooking(@Valid @PathVariable("schedualId") int schedualId ,
+    public ApiResponse<CarriagePriceResponse> updateCarriagePrice(@Valid @PathVariable("schedualId") int schedualId ,
                                                             @PathVariable("carriageClassId") int carriageClassId ,
                                                             @RequestBody CarriagePriceUpdateRequest carriagePriceRequest  ){
         CarriagePriceResponse carriagePriceResponse = carriagePriceService.updateCarriagePrice(carriagePriceRequest , schedualId , carriageClassId) ;

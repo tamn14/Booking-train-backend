@@ -37,7 +37,7 @@ public class CarriageClassController {
     }
 
     @PutMapping("/{id}")
-    public ApiResponse<CarriageClassResponse> updateBooking(@Valid @PathVariable int id
+    public ApiResponse<CarriageClassResponse> updateCarriageClass(@Valid @PathVariable int id
             , @RequestBody CarriageClassRequest carriageClassRequest  ){
         CarriageClassResponse carriageClassResponse = carriageClassService.updateCarriageClass(carriageClassRequest , id) ;
         return ApiResponse.<CarriageClassResponse>builder()
@@ -47,8 +47,8 @@ public class CarriageClassController {
 
     }
 
-    @PostMapping
-    public ApiResponse<CarriageClassResponse> addBooking(@RequestBody @Valid CarriageClassRequest carriageClassRequest) {
+    @PostMapping("/create")
+    public ApiResponse<CarriageClassResponse> addCarriageClass(@RequestBody @Valid CarriageClassRequest carriageClassRequest) {
         CarriageClassResponse carriageClassResponse = carriageClassService.add(carriageClassRequest) ;
         return ApiResponse.<CarriageClassResponse>builder()
                 .mess("Success")

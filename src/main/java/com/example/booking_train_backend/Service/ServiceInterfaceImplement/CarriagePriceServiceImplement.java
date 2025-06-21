@@ -24,44 +24,45 @@ public class CarriagePriceServiceImplement implements CarriagePriceService {
     private CarriageClassRepo carriageClassRepo ;
     private ScheduleRepo scheduleRepo ;
     private CarriagePriceMapper carriagePriceMapper ;
-
     @Autowired
     public CarriagePriceServiceImplement(CarriagePriceRepo carriagePriceRepo,
+                                         CarriageClassRepo carriageClassRepo,
+                                         ScheduleRepo scheduleRepo,
                                          CarriagePriceMapper carriagePriceMapper) {
         this.carriagePriceRepo = carriagePriceRepo;
+        this.carriageClassRepo = carriageClassRepo;
+        this.scheduleRepo = scheduleRepo;
         this.carriagePriceMapper = carriagePriceMapper;
     }
 
-
     @Override
     public CarriagePriceResponse addCarriagePrice(CarriagePriceRequest request) {
-        // ----------- KIEM TRA CAC GIA TRI REQUEST ----------------//
-        Schedule schedule = scheduleRepo.findByName(request.getScheduleName()) ;
-        if(schedule == null) {
-            throw new AppException(ErrorCode.SCHEDULE_NOT_EXISTED) ;
-        }
-        CarriageClass carriageClass = carriageClassRepo.findByName(request.getCarriageClass()) ;
-        if( carriageClass == null) {
-            throw new AppException(ErrorCode.CARRIAGE_CLASS_NOT_EXISTED) ;
+        Schedule schedule = scheduleRepo.findByName(request.getScheduleName());
+        if (schedule == null) {
+            throw new AppException(ErrorCode.SCHEDULE_NOT_EXISTED);
         }
 
-        // chuyen carriage class thanh entity
-        CarriagePrice carriagePrice = carriagePriceMapper.toEntity(request) ;
-        CarriagePriceId carriagePriceId = carriagePrice.getId() ;
-        carriagePriceId.setScheduleId(schedule.getId());
-        carriagePriceId.setCarriageClassId(carriageClass.getId());
-        carriagePrice.setId(carriagePriceId);
-        // Set quan he hai chieu cho Schedule va CarriageClass voi CarriagePrice
-        schedule.getCarriagePrices().add(carriagePrice) ;
+        CarriageClass carriageClass = carriageClassRepo.findByName(request.getCarriageClass());
+        if (carriageClass == null) {
+            throw new AppException(ErrorCode.CARRIAGE_CLASS_NOT_EXISTED);
+        }
+
+        CarriagePriceId id = new CarriagePriceId(schedule.getId(), carriageClass.getId());
+        if (carriagePriceRepo.existsById(id)) {
+            throw new AppException(ErrorCode.CARRIAGE_PRICE_ALREADY_EXISTS);
+        }
+
+        CarriagePrice carriagePrice = carriagePriceMapper.toEntity(request, schedule, carriageClass);
+
+        // KHÔNG gọi add() hai chiều để tránh lỗi Duplicate
         carriagePrice.setSchedule(schedule);
-        carriageClass.getCarriagePrices().add(carriagePrice);
         carriagePrice.setCarriageClass(carriageClass);
 
-        // luu CarriagePrice xuong ///
-        carriagePriceRepo.save(carriagePrice) ;
+        carriagePriceRepo.save(carriagePrice);
 
-        return carriagePriceMapper.toDTO(carriagePrice) ;
+        return carriagePriceMapper.toDTO(carriagePrice);
     }
+
 
     @Override
     public CarriagePriceResponse updateCarriagePrice(CarriagePriceUpdateRequest request ,int scheduleId , int carriageClassId ) {

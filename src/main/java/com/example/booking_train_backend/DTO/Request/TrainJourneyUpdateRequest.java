@@ -1,5 +1,6 @@
 package com.example.booking_train_backend.DTO.Request;
 
+import com.example.booking_train_backend.Entity.Schedule;
 import lombok.*;
 
 import java.util.ArrayList;
@@ -12,7 +13,6 @@ import java.util.List;
 @Builder
 public class TrainJourneyUpdateRequest {
     private String name ;
-    private int schedule ;
-
+    private Integer schedule ;
 
 }

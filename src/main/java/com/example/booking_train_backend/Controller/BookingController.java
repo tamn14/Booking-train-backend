@@ -37,7 +37,7 @@ public class BookingController {
     }
 
     @GetMapping("/{id}")
-    public ApiResponse<BookingResponse> getBookingById(int id) {
+    public ApiResponse<BookingResponse> getBookingById(@PathVariable("id") int id) {
         BookingResponse bookingResponse = bookingService.findBooking(id) ;
         return ApiResponse.<BookingResponse>builder()
                 .mess("Success")
@@ -73,11 +73,10 @@ public class BookingController {
 
     }
     @DeleteMapping("/{id}")
-    public ApiResponse<String> deleteBooking(@PathVariable int id ) {
+    public ApiResponse<Void> deleteBooking(@PathVariable int id ) {
         bookingService.deleteBooking(id);
-        return ApiResponse.<String>builder()
+        return ApiResponse.<Void>builder()
                 .mess("Success")
-                .result("Booking has been deleted")
                 .build() ;
     }
 

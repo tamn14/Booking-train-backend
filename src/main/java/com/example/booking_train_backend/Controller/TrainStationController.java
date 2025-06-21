@@ -36,12 +36,12 @@ public class TrainStationController {
     }
 
     @GetMapping("/{name}")
-    public ApiResponse<TrainStationResponse> getTrainStationByName(String name) {
-        TrainStationResponse trainStationResponse = trainStationService.findByStationName(name) ;
+    public ApiResponse<TrainStationResponse> getTrainStationByName(@PathVariable String name) {
+        TrainStationResponse trainStationResponse = trainStationService.findByStationName(name);
         return ApiResponse.<TrainStationResponse>builder()
                 .mess("Success")
                 .result(trainStationResponse)
-                .build() ;
+                .build();
     }
     @PostMapping
     public ApiResponse<TrainStationResponse> addTrainStation(@RequestBody @Valid TrainStationRequest trainStationRequest) {

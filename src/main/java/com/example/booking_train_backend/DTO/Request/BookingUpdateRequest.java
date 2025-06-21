@@ -8,7 +8,6 @@ import lombok.*;
 @NoArgsConstructor
 @Builder
 public class BookingUpdateRequest {
-
     private String trainStationEnd ;
     private int trainJourney  ;
     private String carriageClass ;

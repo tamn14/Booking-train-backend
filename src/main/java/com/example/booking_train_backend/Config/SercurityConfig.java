@@ -34,18 +34,31 @@ public class SercurityConfig {
         return new TokenAuthenticationFilter(tokenBlacklistService);
     }
 
+//    @Bean
+//    public SecurityFilterChain filterChain(HttpSecurity httpSecurity , TokenAuthenticationFilter tokenAuthenticationFilter) throws Exception {
+//        return httpSecurity
+//                .authorizeHttpRequests(auth -> auth
+//                        .requestMatchers(HttpMethod.POST, PUBLIC_ENDPOINTS).permitAll()
+//                        .anyRequest().authenticated()
+//                        .anyRequest().permitAll()
+//                )
+//                .addFilterBefore(tokenAuthenticationFilter, BasicAuthenticationFilter.class)
+//                .oauth2ResourceServer(oauth2 -> oauth2.jwt(jwt -> jwt
+//                        .jwtAuthenticationConverter(jwtAuthenticationConverter())))
+//                .csrf(AbstractHttpConfigurer::disable)
+//                .build();
+//    }
+
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity httpSecurity , TokenAuthenticationFilter tokenAuthenticationFilter) throws Exception {
+    public SecurityFilterChain devFilterChain(HttpSecurity httpSecurity) throws Exception {
         return httpSecurity
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(HttpMethod.POST, PUBLIC_ENDPOINTS).permitAll()
-                        .anyRequest().authenticated())
-                .addFilterBefore(tokenAuthenticationFilter, BasicAuthenticationFilter.class)
-                .oauth2ResourceServer(oauth2 -> oauth2.jwt(jwt -> jwt
-                        .jwtAuthenticationConverter(jwtAuthenticationConverter())))
+                        .anyRequest().permitAll())
                 .csrf(AbstractHttpConfigurer::disable)
                 .build();
     }
+
+
 
     @Bean
     public JwtAuthenticationConverter jwtAuthenticationConverter() {

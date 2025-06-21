@@ -136,7 +136,7 @@ public class BookingServiceImplement implements BookingService {
         // chi xoa booking neu thoi gian dat ve khong qua 10 phut
         // Kiểm tra thời gian đặt và hiện tại
         LocalDateTime now = LocalDateTime.now();
-        if (Duration.between(booking.getBookingDate(), now).toMinutes() > 10) {
+        if (Duration.between(booking.getBookingDate(), now).toMinutes() > 30) {
             throw new AppException(ErrorCode.UNAUTHENTICATED);
         }
 

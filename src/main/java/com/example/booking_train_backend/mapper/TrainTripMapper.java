@@ -1,16 +1,16 @@
 package com.example.booking_train_backend.mapper;
 
 
+import com.example.booking_train_backend.DTO.Request.JourneyStationRequest;
 import com.example.booking_train_backend.DTO.Request.TrainTripRequest;
 import com.example.booking_train_backend.DTO.Response.TrainTripResponse;
-import com.example.booking_train_backend.Entity.TrainTrip;
+import com.example.booking_train_backend.Entity.*;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
 @Mapper(componentModel = "spring")
 public interface TrainTripMapper {
-    // mapping from request to entity
-
+//     mapping from request to entity
     @Mapping(source = "departureDate", target = "departureDate")
     @Mapping(source = "departureTime", target = "departureTime")
     TrainTrip toEntity (TrainTripRequest request) ;
@@ -20,4 +20,7 @@ public interface TrainTripMapper {
     @Mapping(source = "departureDate", target = "departureDate")
     @Mapping(source = "departureTime", target = "departureTime")
     TrainTripResponse toDTO (TrainTrip trainTrip) ;
+
+
+
 }
