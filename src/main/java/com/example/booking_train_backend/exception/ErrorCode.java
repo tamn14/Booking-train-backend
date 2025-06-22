@@ -26,8 +26,9 @@ public enum ErrorCode {
     EMAIL_EXISTED(1016, "Email already existed", HttpStatus.CONFLICT),
     USERNAME_IS_MISSING(1017, "Username is missing", HttpStatus.BAD_REQUEST),
     CARRIAGE_PRICE_ALREADY_EXISTS(1017, "CarriagePriceID already existed", HttpStatus.CONFLICT),
-    JOURNEY_STATION_NOT_EXISTS(1018, "Journey Station not existed", HttpStatus.CONFLICT),
-    JOURNEY_CARRIAGE_NOT_EXISTS(1019, "Journey Carriage not existed", HttpStatus.CONFLICT),
+    JOURNEY_STATION_NOT_EXISTS(1018, "Journey Station not existed", HttpStatus.NOT_FOUND),
+    JOURNEY_CARRIAGE_NOT_EXISTS(1019, "Journey Carriage not existed", HttpStatus.NOT_FOUND),
+    TRAIN_TRIP_NOT_EXISTED(1020,"Train trip not existed" ,  HttpStatus.NOT_FOUND),
     TRAIN_JOURNEY_NOT_EXISTED(1010,"Train journey not existed" ,  HttpStatus.NOT_FOUND);
 
     ErrorCode(int code, String message, HttpStatusCode statusCode) {

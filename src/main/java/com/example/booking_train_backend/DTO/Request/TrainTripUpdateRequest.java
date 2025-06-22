@@ -11,7 +11,7 @@ import java.util.Date;
 @NoArgsConstructor
 @Builder
 public class TrainTripUpdateRequest {
-    private int id ;
+    private Integer trainJourneyId;
     private Date departureDate ;
     private Time departureTime ;
 }
