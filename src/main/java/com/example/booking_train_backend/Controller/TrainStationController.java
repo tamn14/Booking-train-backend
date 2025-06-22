@@ -43,7 +43,7 @@ public class TrainStationController {
                 .result(trainStationResponse)
                 .build();
     }
-    @PostMapping
+    @PostMapping("/create")
     public ApiResponse<TrainStationResponse> addTrainStation(@RequestBody @Valid TrainStationRequest trainStationRequest) {
         TrainStationResponse trainStationResponse = trainStationService.addTrainStation(trainStationRequest) ;
         return ApiResponse.<TrainStationResponse>builder()

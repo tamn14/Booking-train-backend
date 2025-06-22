@@ -25,7 +25,7 @@ public class CarriagePriceController {
     public CarriagePriceController(CarriagePriceService carriagePriceService) {
         this.carriagePriceService = carriagePriceService;
     }
-    @PostMapping
+    @PostMapping("/create")
     public ApiResponse<CarriagePriceResponse> addCarriagePrice(@RequestBody @Valid CarriagePriceRequest carriagePriceRequest) {
         CarriagePriceResponse carriagePriceResponse = carriagePriceService.addCarriagePrice(carriagePriceRequest) ;
         return ApiResponse.<CarriagePriceResponse>builder()

@@ -45,7 +45,7 @@ public class TrainJourneyController {
                 .build() ;
     }
 
-    @PostMapping
+    @PostMapping("/create")
     public ApiResponse<TrainJourneyResponse> addTrainJourney(@RequestBody @Valid TrainJourneyRequest trainJourneyRequest) {
         TrainJourneyResponse trainJourneyResponse = trainJourneyService.addTrainJourney(trainJourneyRequest);
         return ApiResponse.<TrainJourneyResponse>builder()
