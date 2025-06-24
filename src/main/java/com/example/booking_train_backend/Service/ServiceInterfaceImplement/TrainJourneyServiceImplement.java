@@ -12,6 +12,7 @@ import com.example.booking_train_backend.mapper.JourneyStationMapper;
 import com.example.booking_train_backend.mapper.TrainJourneyMapper;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -114,6 +115,7 @@ public class TrainJourneyServiceImplement implements TrainJourneyService {
     }
 
     @Override
+    @PreAuthorize("hasRole('ADMIN')")
     public TrainJourneyResponse addTrainJourney(TrainJourneyRequest request) {
         // 1. Validate input
         Schedule schedule = getScheduleById(request.getSchedule());
@@ -151,6 +153,7 @@ public class TrainJourneyServiceImplement implements TrainJourneyService {
     }
 
     @Override
+    @PreAuthorize("hasRole('ADMIN')")
     public TrainJourneyResponse updateTrainJourney(TrainJourneyUpdateRequest request , int id ) {
         // lay TrainJourney can update
         TrainJourney trainJourney = trainJourneyRepo.findById(id)
@@ -182,6 +185,7 @@ public class TrainJourneyServiceImplement implements TrainJourneyService {
     }
 
     @Override
+    @PreAuthorize("hasRole('ADMIN')")
     public List<TrainJourneyResponse> findByName(String name) {
         List<TrainJourney> trainJourneys = trainJourneyRepo.findByName(name) ;
         List<TrainJourneyResponse> trainJourneyResponses = new ArrayList<>() ;
@@ -193,6 +197,7 @@ public class TrainJourneyServiceImplement implements TrainJourneyService {
     }
 
     @Override
+    @PreAuthorize("hasRole('ADMIN')")
     public TrainJourneyResponse findById(int id) {
         TrainJourney trainJourney = trainJourneyRepo.findById(id)
                 .orElseThrow(()-> new AppException(ErrorCode.TRAIN_JOURNEY_NOT_EXISTED)) ;

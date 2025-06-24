@@ -1,14 +1,11 @@
 package com.example.booking_train_backend.Controller;
 
 import com.example.booking_train_backend.DTO.Request.BookingRequest;
-import com.example.booking_train_backend.DTO.Request.BookingUpdateRequest;
 import com.example.booking_train_backend.DTO.Response.ApiResponse;
 import com.example.booking_train_backend.DTO.Response.BookingResponse;
 import com.example.booking_train_backend.Service.ServiceInterface.BookingService;
-import com.example.booking_train_backend.Service.ServiceInterfaceImplement.BookingServiceImplement;
 import jakarta.validation.Valid;
 import lombok.AccessLevel;
-import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -62,16 +59,7 @@ public class BookingController {
                 .result(bookingResponse)
                 .build() ;
     }
-    @PutMapping("/{id}")
-    public ApiResponse<BookingResponse> updateBooking(@Valid @PathVariable int id
-            , @RequestBody BookingUpdateRequest bookingCreateRequest  ){
-        BookingResponse bookingResponse = bookingService.updateBooking(bookingCreateRequest , id) ;
-        return ApiResponse.<BookingResponse>builder()
-                .mess("Success")
-                .result(bookingResponse)
-                .build() ;
 
-    }
     @DeleteMapping("/{id}")
     public ApiResponse<Void> deleteBooking(@PathVariable int id ) {
         bookingService.deleteBooking(id);

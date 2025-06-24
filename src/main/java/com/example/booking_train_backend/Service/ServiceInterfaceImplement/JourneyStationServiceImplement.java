@@ -17,6 +17,7 @@ import com.example.booking_train_backend.mapper.JourneyStationMapper;
 import com.example.booking_train_backend.mapper.TrainJourneyMapper;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -73,6 +74,7 @@ public class JourneyStationServiceImplement implements JourneyStationService {
         }
     }
     @Override
+    @PreAuthorize("hasRole('ADMIN')")
     public TrainJourneyResponse addJourneyStation(JourneyStationRequest request, int TrainJourneyId) {
         // kiem tra trainJourney co ton tai khong
         TrainJourney trainJourney = getTrainJourneyById(TrainJourneyId) ;
@@ -105,6 +107,7 @@ public class JourneyStationServiceImplement implements JourneyStationService {
     }
 
     @Override
+    @PreAuthorize("hasRole('ADMIN')")
     public TrainJourneyResponse updateJourneyStation(JourneyStationUpdateRequest request, int trainJourneyId) {
         TrainJourney oldJourney = getTrainJourneyById(trainJourneyId);
         JourneyStationId oldId = new JourneyStationId(trainJourneyId, request.getTrainStationId());
@@ -142,6 +145,7 @@ public class JourneyStationServiceImplement implements JourneyStationService {
     }
 
     @Override
+    @PreAuthorize("hasRole('ADMIN')")
     public void  deleteJourneyStation(int trainJourneyId, int trainStationId) {
         getTrainJourneyById(trainJourneyId); // Đảm bảo tồn tại
         getTrainStationById(trainStationId); // Đảm bảo tồn tại

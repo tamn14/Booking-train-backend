@@ -14,6 +14,7 @@ import com.example.booking_train_backend.mapper.TrainJourneyMapper;
 import com.example.booking_train_backend.mapper.TrainTripMapper;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 import java.util.Objects;
@@ -47,6 +48,7 @@ public class TrainTripServiceImplement implements TrainTripService {
     }
 
     @Override
+    @PreAuthorize("hasRole('ADMIN')")
     public TrainJourneyResponse addTrainTrip(TrainTripRequest request, int TrainJourneyId) {
         // kiem tra TrainJourney
         TrainJourney trainJourney = getTrainJourneyById(TrainJourneyId) ;
@@ -60,6 +62,7 @@ public class TrainTripServiceImplement implements TrainTripService {
     }
 
     @Override
+    @PreAuthorize("hasRole('ADMIN')")
     public TrainJourneyResponse updateTrainTrip(TrainTripUpdateRequest request, int trainTripId , int trainJourneyId) {
         // kiem tra TrainJourney
         TrainJourney oldTrainJourney = getTrainJourneyById(request.getTrainJourneyId()) ;
@@ -97,6 +100,7 @@ public class TrainTripServiceImplement implements TrainTripService {
     }
 
     @Override
+    @PreAuthorize("hasRole('ADMIN')")
     public void deleteTrainTrip(int TrainJourneyId, int TrainTripId) {
         // kiem tra TrainJourney
         TrainJourney oldTrainJourney = getTrainJourneyById(TrainJourneyId) ;

@@ -19,8 +19,8 @@ public interface JourneyStationMapper {
 
 
     // mapping from entity to DTO
-    @Mapping(source = "trainStation.stationName", target = "trainJourney")
-    @Mapping(source = "trainJourney.name", target = "trainStation")
+    @Mapping(source = "trainJourney.name", target = "trainJourney")
+    @Mapping(source = "trainStation.stationName", target = "trainStation")
     @Mapping(source = "stopOrder", target = "stopOrder")
     @Mapping(source = "departureTime", target = "departureTime")
     JourneyStationResponse toDTO (JourneyStation journeyStation) ;

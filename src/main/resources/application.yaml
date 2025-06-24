@@ -19,6 +19,20 @@ spring:
       resourceserver:
         jwt:
           issuer-uri: http://localhost:8081/realms/booking
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: <your email>
+    password: <your app password>
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+        from: Tamn0443@gmail.com
+
+
 
 bucket4j:
   enabled: true
@@ -45,3 +59,9 @@ idp:
   client-id: client_Id
   client-secret: Client-secret
   realm: security-keycloak
+
+#Config Qr
+Qr:
+   width: 300
+   height: 300
+

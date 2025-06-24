@@ -10,6 +10,7 @@ import com.example.booking_train_backend.exception.ErrorCode;
 import com.example.booking_train_backend.mapper.CarriageClassMapper;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -29,15 +30,28 @@ public class CarriageClassServiceImplement implements CarriageClassService {
         this.carriageClassMapper = carriageClassMapper;
     }
 
+    private void checkCarriageClassExisted (String name) {
+        CarriageClass carriageClass = carriageClassRepo.findByName(name) ;
+        if(carriageClass != null) {
+            throw new AppException(ErrorCode.CARRIAGE_CLASS_EXISTED) ;
+        }
+
+    }
+
+    private CarriageClass getCarriageClassById(int id) {
+       return carriageClassRepo.findById(id)
+                .orElseThrow(()-> new AppException(ErrorCode.CARRIAGE_CLASS_NOT_EXISTED)) ;
+    }
+
+
+
 
     @Override
+    @PreAuthorize("hasRole('ADMIN')")
     public CarriageClassResponse add(CarriageClassRequest request) {
         // kiem tra class name da ton tai chua //
-        CarriageClass carriageClassExisted = carriageClassRepo.findByName(request.getClassName())  ;
-        if(carriageClassExisted != null) {
-            throw  new AppException(ErrorCode.CARRIAGE_CLASS_EXISTED) ;
+       checkCarriageClassExisted(request.getClassName()); ;
 
-        }
         //  luu CarriageClass ////
         CarriageClass carriageClass = carriageClassRepo.save(carriageClassMapper.toEntity(request)) ;
         return carriageClassMapper.toDTO(carriageClass) ;
@@ -45,9 +59,9 @@ public class CarriageClassServiceImplement implements CarriageClassService {
     }
 
     @Override
+    @PreAuthorize("hasRole('ADMIN')")
     public CarriageClassResponse updateCarriageClass(CarriageClassRequest request , int id) {
-        CarriageClass carriageClassUpdate = carriageClassRepo.findById(id)
-                .orElseThrow(()-> new AppException(ErrorCode.CARRIAGE_CLASS_NOT_EXISTED)) ;
+        CarriageClass carriageClassUpdate = getCarriageClassById(id);
         // cap nhat lai thong tin carriage class //
         carriageClassUpdate.setName(request.getClassName());
         carriageClassUpdate.setSeatingCapacity(request.getSeatingCapacity());
@@ -57,6 +71,7 @@ public class CarriageClassServiceImplement implements CarriageClassService {
     }
 
     @Override
+    @PreAuthorize("hasRole('ADMIN')")
     public List<CarriageClassResponse> findAll() {
         return carriageClassRepo.findAll().stream().map(carriageClassMapper :: toDTO).toList() ;
     }

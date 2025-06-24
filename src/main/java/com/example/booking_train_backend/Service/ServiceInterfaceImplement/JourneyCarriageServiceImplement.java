@@ -15,6 +15,7 @@ import com.example.booking_train_backend.mapper.JourneyCarriageMapper;
 import com.example.booking_train_backend.mapper.TrainJourneyMapper;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -75,6 +76,7 @@ public class JourneyCarriageServiceImplement implements JourneyCarriageService {
     }
 
     @Override
+    @PreAuthorize("hasRole('ADMIN')")
     public TrainJourneyResponse addJourneyCarriage(JourneyCarriageRequest request, int TrainJourneyId) {
         // kiem tra TrainJourney va CarriageClass
         TrainJourney trainJourney = getTrainJourneyById(TrainJourneyId) ;
@@ -109,6 +111,7 @@ public class JourneyCarriageServiceImplement implements JourneyCarriageService {
     }
 
     @Override
+    @PreAuthorize("hasRole('ADMIN')")
     public TrainJourneyResponse updateJourneyCarriage(JourneyCarriageUpdateRequest request, int trainJourneyId) {
         TrainJourney oldJourney = getTrainJourneyById(trainJourneyId);
         JourneyCarriageId oldId = new JourneyCarriageId(trainJourneyId, request.getCarriageClass());
@@ -141,6 +144,7 @@ public class JourneyCarriageServiceImplement implements JourneyCarriageService {
 
 
     @Override
+    @PreAuthorize("hasRole('ADMIN')")
     public void deleteJourneyCarriage(int trainJourneyId, int carriageClassId) {
         getTrainJourneyById(trainJourneyId); // Đảm bảo tồn tại
         getCarriageClass(carriageClassId); // Đảm bảo tồn tại

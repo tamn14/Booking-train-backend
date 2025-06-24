@@ -1,11 +1,8 @@
 package com.example.booking_train_backend.Controller;
 
-import com.example.booking_train_backend.DTO.Request.BookingUpdateRequest;
 import com.example.booking_train_backend.DTO.Request.ScheduleRequest;
 import com.example.booking_train_backend.DTO.Response.ApiResponse;
-import com.example.booking_train_backend.DTO.Response.BookingResponse;
 import com.example.booking_train_backend.DTO.Response.ScheduleResponse;
-import com.example.booking_train_backend.Entity.Schedule;
 import com.example.booking_train_backend.Service.ServiceInterface.ScheduleService;
 import jakarta.validation.Valid;
 import lombok.AccessLevel;

@@ -29,6 +29,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.jwt.Jwt;
+import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
@@ -65,16 +66,35 @@ public class UserServiceImplement implements UserService {
         this.extract = extract;
     }
 
-    @Override
-    public UsersResponse createUser(UsersRequest request) {
-        Users passenger = usersRepo.findByUserName(request.getUserName()) ;
-        if((passenger != null)) {
-            throw new AppException(ErrorCode.USER_EXISTED) ;
-
+    private void checkUserNameExisted(String username) {
+        if (usersRepo.findByUserName(username) != null) {
+            throw new AppException(ErrorCode.USER_EXISTED);
         }
-        if (usersRepo.existsByEmail(request.getEmail())) {
+    }
+
+
+
+    private void checkEmailExisted (String email) {
+        if (usersRepo.existsByEmail(email)) {
             throw new AppException(ErrorCode.EMAIL_EXISTED) ;
         }
+    }
+
+    private void checkDeleteAt(Users users) {
+        if (users.getDeletedAt() != null) {
+            throw new AppException(ErrorCode.USER_NOT_EXISTED);
+        }
+    }
+
+
+
+    @Override
+    public UsersResponse createUser(UsersRequest request) {
+        // kiem tra user
+        checkUserNameExisted(request.getUserName());
+
+        // kiem tra email ton tai
+        checkEmailExisted(request.getEmail());
         try {
             // lay access Token de co the goi API keycloak tao nguoi dung
             var accessToken = keycloakClientTokenService.getAccessToken() ;
@@ -129,31 +149,44 @@ public class UserServiceImplement implements UserService {
     @Override
     @PreAuthorize( "hasRole('ADMIN')")
     public List<UsersResponse> getAllUsers() {
-        return usersRepo.findAll().stream().map(passengerMapper::toDTO).toList();
+        return usersRepo.findByDeletedAtIsNull()
+                .stream().map(passengerMapper::toDTO).toList();
 
     }
 
     @Override
     @PreAuthorize( "hasRole('ADMIN')")
     public UsersResponse getUserById(int id) {
-        Users passenger = usersRepo.findById(id)
+        Users users = usersRepo.findById(id)
                 .orElseThrow(()-> new AppException(ErrorCode.USER_NOT_EXISTED)) ;
-        return passengerMapper.toDTO(passenger) ;
+        return passengerMapper.toDTO(users) ;
 
     }
 
     @Override
     @PostAuthorize("returnObject.userName == authentication.name")
     public UsersResponse updateUser(UsersUpdateRequest usersRequest) {
-
         // lay user hien tai tu phien dang nhap
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String currentUsername = auth.getName();
         // khong can kiem tra user co ton tai khong vi lay tong tin username tu chinh phien dang nhap cua user
         Users passenger = usersRepo.findByUserName(currentUsername) ;
+
+        if (usersRequest.getUserName() != null
+                && !usersRequest.getUserName().equals(passenger.getUserName())
+                && usersRepo.findByUserName(usersRequest.getUserName()) != null) {
+            throw new AppException(ErrorCode.USER_EXISTED);
+        }
+
+
         if (passenger == null) {
             throw new AppException(ErrorCode.USER_NOT_EXISTED);
         }
+
+        // kiem tra da delete
+        checkDeleteAt(passenger);
+
+
         // cap nhat thong tin users
         try {
             // lay accessToken cua user
@@ -196,9 +229,13 @@ public class UserServiceImplement implements UserService {
         // lay userId cua user dang dang nhap
         String userKeycloakId = authentication.getName() ;
         var user = usersRepo.findByUserKeycloakId(userKeycloakId) ;
+
         if (user == null) {
             throw new AppException(ErrorCode.USER_NOT_EXISTED);
         }
+
+        // kiem tra delete
+        checkDeleteAt(user);
         return passengerMapper.toDTO(user) ;
 
     }
@@ -217,6 +254,10 @@ public class UserServiceImplement implements UserService {
         if (passenger == null) {
             throw new AppException(ErrorCode.USER_NOT_EXISTED);
         }
+
+        // kiem tra delete
+        checkDeleteAt(passenger);
+
 
         // kiem tra co mat khau cu co khop khong
         //Y tuong la lay accessToken cua user neu duoc la dung

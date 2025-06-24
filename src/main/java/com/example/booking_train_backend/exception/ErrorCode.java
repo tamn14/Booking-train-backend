@@ -29,6 +29,7 @@ public enum ErrorCode {
     JOURNEY_STATION_NOT_EXISTS(1018, "Journey Station not existed", HttpStatus.NOT_FOUND),
     JOURNEY_CARRIAGE_NOT_EXISTS(1019, "Journey Carriage not existed", HttpStatus.NOT_FOUND),
     TRAIN_TRIP_NOT_EXISTED(1020,"Train trip not existed" ,  HttpStatus.NOT_FOUND),
+    BOOKING_TIMEOUT_FOR_CANCEL(1021,"Can't scancel booking after 30 minute" ,  HttpStatus.BAD_REQUEST),
     TRAIN_JOURNEY_NOT_EXISTED(1010,"Train journey not existed" ,  HttpStatus.NOT_FOUND);
 
     ErrorCode(int code, String message, HttpStatusCode statusCode) {

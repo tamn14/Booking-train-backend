@@ -1,10 +1,7 @@
 package com.example.booking_train_backend.Controller;
 
-import com.example.booking_train_backend.DTO.Request.BookingRequest;
-import com.example.booking_train_backend.DTO.Request.BookingUpdateRequest;
 import com.example.booking_train_backend.DTO.Request.CarriageClassRequest;
 import com.example.booking_train_backend.DTO.Response.ApiResponse;
-import com.example.booking_train_backend.DTO.Response.BookingResponse;
 import com.example.booking_train_backend.DTO.Response.CarriageClassResponse;
 import com.example.booking_train_backend.Service.ServiceInterface.CarriageClassService;
 import jakarta.validation.Valid;

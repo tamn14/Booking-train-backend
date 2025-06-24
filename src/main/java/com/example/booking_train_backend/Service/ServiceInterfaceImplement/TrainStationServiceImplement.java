@@ -10,6 +10,7 @@ import com.example.booking_train_backend.exception.AppException;
 import com.example.booking_train_backend.exception.ErrorCode;
 import com.example.booking_train_backend.mapper.TrainStationMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -25,29 +26,42 @@ public class TrainStationServiceImplement implements TrainStationService {
         this.trainStationMapper = trainStationMapper;
     }
 
+    private void checkTrainStationExisted (String name) {
+        TrainStation trainStation = trainStationRepo.findByStationName(name) ;
+        if(trainStation != null) {
+            throw  new AppException(ErrorCode.TRAIN_STATION_EXISTED) ;
+        }
+    }
+
+    private TrainStation getTrainStationByName(String name) {
+        TrainStation trainStation = trainStationRepo.findByStationName(name) ;
+        if(trainStation == null) {
+            throw new AppException(ErrorCode.TRAIN_STATION_NOT_EXISTED) ;
+        }
+        return trainStation ;
+    }
+
 
 
     @Override
+    @PreAuthorize("hasRole('ADMIN')")
     public TrainStationResponse addTrainStation(TrainStationRequest request) {
         // Kiem tra train station da ton tai hay chua
-        if(trainStationRepo.findByStationName(request.getName()) != null) {
-            throw  new AppException(ErrorCode.TRAIN_STATION_EXISTED) ;
-        }
+       checkTrainStationExisted(request.getName());
         TrainStation trainStation = trainStationMapper.toEntity(request) ;
         trainStationRepo.save(trainStation) ;
         return trainStationMapper.toDTO(trainStation) ;
     }
 
     @Override
+    @PreAuthorize("hasRole('ADMIN')")
     public TrainStationResponse findByStationName(String name) {
-        TrainStation trainStation = trainStationRepo.findByStationName(name) ;
-        if(trainStation == null) {
-            throw new AppException(ErrorCode.TRAIN_STATION_NOT_EXISTED) ;
-        }
+        TrainStation trainStation = getTrainStationByName(name) ;
         return trainStationMapper.toDTO(trainStation);
     }
 
     @Override
+    @PreAuthorize("hasRole('ADMIN')")
     public List<TrainStationResponse> findAll() {
         return trainStationRepo.findAll().stream().map(trainStationMapper :: toDTO).toList() ;
     }
