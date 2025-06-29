@@ -1,41 +1,52 @@
-version: '3.6'
+version: '3.6' # cau hinh version
 
+# khai bao cac service
 services:
-  keycloak:
-    image: quay.io/keycloak/keycloak:23.0.7
-    container_name: keycloak
+  keycloak: # the hien day la service keycloak
+    image: quay.io/keycloak/keycloak:23.0.7   # ten service dat cho container Keycloak
+    container_name: keycloak  # suu dung image chinh thuc cua keycloak tu kho quay.io
     environment:
-      KC_DB: postgres
-      KC_DB_URL: jdbc:postgresql://keycloakdb:5432/keycloak
-      KC_DB_USERNAME: keycloak
-      KC_DB_PASSWORD: password
-
-      KC_HOSTNAME: localhost
-      KC_HOSTNAME_PORT: 8081
-      KC_HOSTNAME_STRICT: false
-      KC_HOSTNAME_STRICT_HTTPS: false
-
-      KC_LOG_LEVEL: info
+      KC_DB: postgres # chon CSDL la postgres
+      KC_DB_URL: jdbc:postgresql://keycloakdb:5432/keycloak    # URL ket noi den postgres
+      KC_DB_USERNAME: keycloak   # tai khoan ket noi den keycloak
+      KC_DB_PASSWORD: ${KC_DB_PASSWORD}    # mat khau ket noi den keycloak
+      KC_LOG_LEVEL: info    # Muc log hien thi, bat cac endpoint
       KC_METRICS_ENABLED: true
       KC_HEALTH_ENABLED: true
-
-      KEYCLOAK_ADMIN: root
-      KEYCLOAK_ADMIN_PASSWORD: root
-    command: start-dev
+      KEYCLOAK_ADMIN: ${KEYCLOAK_ADMIN}  # tai khoan admin dang nhap keycloak
+      KEYCLOAK_ADMIN_PASSWORD: ${KEYCLOAK_ADMIN_PASSWORD}    # password admin dang nhap keycloak
+    command: start-dev   # bat che do dev
     depends_on:
-      - keycloakdb
+      - keycloakdb   # dam bao keycloakdb chay truoc keycloak
     ports:
-      - 8081:8080
-
+      - "8081:8080"  # cong truy cap : localhost:8081
+    restart: unless-stopped   # Restart khi lỗi, neu container loi hoac server khoi dong lai, container se khoi dong lai tu dong
+    networks:
+      - backend-net  # ket noi mang rieng
+  # cau hinh database dung postgres
   keycloakdb:
-    image: postgres:15
-    container_name: keycloak_db
+    image: postgres:15  # su dung image postgres 15
+    container_name: keycloak_db   # Ten container
     volumes:
-      - keycloak_data:/var/lib/postgresql/data
-    environment:
+      - keycloak_data:/var/lib/postgresql/data   # du lieu postgres duoc luu tai volume keycloak_data, neu container bi xoa thi du lieu van con
+    environment:   # cac bien de postgres tu tao Db, user, password khi khoi dong lan dau
       POSTGRES_DB: keycloak
       POSTGRES_USER: keycloak
-      POSTGRES_PASSWORD: password
-
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    restart: unless-stopped    # tu khoi dong lai neu co su co
+    networks:    # cau hinh mang de cung mang voi keycloak de hai container co the noi chuyen voi nhau
+      - backend-net
+  redis:
+    image: redis:7
+    container_name: redis
+    ports:
+      - "6379:6379"  # ánh xạ port 6379 ra host để Spring Boot có thể truy cập nếu chạy ngoài container
+    restart: unless-stopped
+    networks:
+      - backend-net
+# tao volume keycloak-data de luu du lieu keycloak
 volumes:
   keycloak_data:
+# tao mang noi bo de cac container trong mang nay co the giao tiep voi nhau, khac mang khong the giao tiep duoc
+networks:
+  backend-net:

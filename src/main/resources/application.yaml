@@ -22,15 +22,12 @@ spring:
   mail:
     host: smtp.gmail.com
     port: 587
-    username: <your email>
-    password: <your app password>
+    username: your.email@gmail.com
+    password: your-app-password
     properties:
-      mail:
-        smtp:
-          auth: true
-          starttls:
-            enable: true
-        from: Tamn0443@gmail.com
+      mail.smtp.auth: true
+      mail.smtp.starttls.enable: true
+    from: Tamn0443@gmail.com
 
 
 

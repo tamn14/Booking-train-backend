@@ -50,9 +50,10 @@ public class BookingServiceImplement implements BookingService {
                                    TrainStationRepo trainStationRepo,
                                    TrainJourneyRepo trainJourneyRepo,
                                    CarriageClassRepo carriageClassRepo,
-                                   QrServiceImplement qrCode,
-                                   EmailServiceImplement emailService,
-                                   ObjectMapper objectMapper) {
+                                   QrService qrCode,
+                                   EmailService emailService,
+                                   ObjectMapper objectMapper
+                                   ) {
         this.bookingMapper = bookingMapper;
         this.bookingRepo = bookingRepo;
         this.usersRepo = usersRepo;
@@ -62,12 +63,11 @@ public class BookingServiceImplement implements BookingService {
         this.carriageClassRepo = carriageClassRepo;
         this.qrCode = qrCode;
         this.emailService = emailService;
-        this.objectMapper = objectMapper ;
+        this.objectMapper = objectMapper;
+
     }
 
-
-
-    @Value("${mail.from}")
+    @Value("${spring.mail.from}")
     private String mailForm ;
     @Value("${Qr.width}")
     private int widthQr ;
