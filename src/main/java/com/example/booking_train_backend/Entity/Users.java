@@ -1,10 +1,7 @@
 package com.example.booking_train_backend.Entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -18,6 +15,7 @@ import java.util.List;
 @Table(name = "passenger" , uniqueConstraints = {
         @UniqueConstraint(columnNames = "email")
 })
+@Builder
 public class Users {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY )
