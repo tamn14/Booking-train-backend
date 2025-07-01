@@ -22,8 +22,8 @@ spring:
   mail:
     host: smtp.gmail.com
     port: 587
-    username: Tamn0443@gmail.com
-    password: uresgxrebxukksfm
+    username:
+    password:
     properties:
       mail.smtp.auth: true
       mail.smtp.starttls.enable: true
@@ -53,9 +53,9 @@ bucket4j:
 
 idp:
   url: http://localhost:8081
-  client-id: booking
-  client-secret: RrewanBe74aIPMMYOuiuetuTHMSY0MNP
-  realm: booking
+  client-id:
+  client-secret:
+  realm:
 
 #Config Qr
 Qr:
