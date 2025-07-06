@@ -2,15 +2,14 @@ package com.example.booking_train_backend.Service.ServiceInterfaceImplement;
 
 import com.example.booking_train_backend.DTO.KeyloakRequest.Credential;
 import com.example.booking_train_backend.DTO.KeyloakRequest.UserCreationParam;
-import com.example.booking_train_backend.DTO.Request.ChangePasswordRequest;
-import com.example.booking_train_backend.DTO.Request.LoginRequest;
-import com.example.booking_train_backend.DTO.Request.UsersRequest;
-import com.example.booking_train_backend.DTO.Request.UsersUpdateRequest;
+import com.example.booking_train_backend.DTO.Request.*;
 import com.example.booking_train_backend.DTO.Response.UsersResponse;
 import com.example.booking_train_backend.Entity.Users;
 import com.example.booking_train_backend.Properties.IdpProperties;
+import com.example.booking_train_backend.Properties.RoleTemplate;
 import com.example.booking_train_backend.Repo.IdentityProviderRepo;
 import com.example.booking_train_backend.Repo.UsersRepo;
+import com.example.booking_train_backend.Service.ServiceInterface.EmailService;
 import com.example.booking_train_backend.Service.ServiceInterface.KeycloakClientTokenService;
 import com.example.booking_train_backend.Service.ServiceInterface.AuthenticationService;
 import com.example.booking_train_backend.Service.ServiceInterface.UserService;
@@ -22,7 +21,9 @@ import com.example.booking_train_backend.mapper.PassengerMapper;
 import feign.FeignException;
 import jakarta.transaction.RollbackException;
 import jakarta.transaction.Transactional;
+import org.eclipse.angus.mail.imap.protocol.MailboxInfo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -35,6 +36,7 @@ import org.springframework.stereotype.Service;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Random;
 
 @Service
 @Transactional
@@ -47,6 +49,7 @@ public class UserServiceImplement implements UserService {
     private final IdpProperties idpProperties ;
     private final KeycloakNormalizer keycloakNormalizer ;
     private final Extract extract;
+    private final EmailService emailService ;
     @Autowired
     public UserServiceImplement(UsersRepo usersRepo,
                                 IdentityProviderRepo identityProviderRepo,
@@ -55,7 +58,8 @@ public class UserServiceImplement implements UserService {
                                 AuthenticationService keycloakUserTokenService,
                                 IdpProperties idpProperties,
                                 KeycloakNormalizer keycloakNormalizer,
-                                Extract extract) {
+                                Extract extract ,
+                                EmailService emailService) {
         this.usersRepo = usersRepo;
         this.identityProviderRepo = identityProviderRepo;
         this.passengerMapper = passengerMapper;
@@ -64,7 +68,11 @@ public class UserServiceImplement implements UserService {
         this.idpProperties = idpProperties;
         this.keycloakNormalizer = keycloakNormalizer;
         this.extract = extract;
+        this.emailService = emailService ;
     }
+
+    @Value("${spring.mail.from}")
+    private String mailForm ;
 
     private void checkUserNameExisted(String username) {
         if (usersRepo.findByUserName(username) != null) {
@@ -72,7 +80,17 @@ public class UserServiceImplement implements UserService {
         }
     }
 
+    private String createAccountNumber(int length) {
+        String chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"; // hoặc thêm chữ thường nếu cần
+        Random random = new Random();
+        StringBuilder sb = new StringBuilder(length);
 
+        for (int i = 0; i < length; i++) {
+            sb.append(chars.charAt(random.nextInt(chars.length())));
+        }
+
+        return sb.toString();
+    }
 
     private void checkEmailExisted (String email) {
         if (usersRepo.existsByEmail(email)) {
@@ -86,6 +104,34 @@ public class UserServiceImplement implements UserService {
         }
     }
 
+    private void setValueUpdate(Users passenger , UsersUpdateRequest usersRequest ) {
+        passenger.setLastName(usersRequest.getLastName());
+        passenger.setFirstName(usersRequest.getFirstName());
+        // kiem tra email
+        if (usersRequest.getEmail() != null && !usersRequest.getEmail().equals(passenger.getEmail())) {
+            if (usersRepo.existsByEmail(usersRequest.getEmail())) {
+                throw new AppException(ErrorCode.EMAIL_EXISTED) ;
+            }
+            passenger.setEmail(usersRequest.getEmail());
+        }
+    }
+
+    @Override
+    public UsersResponse VerifyUsers(VerifyUserRequest verifyUserRequest , int id) {
+        Users users = usersRepo.findById(id)
+                .orElseThrow(()-> new AppException(ErrorCode.USER_NOT_EXISTED)) ;
+
+        if( verifyUserRequest.getAccountNumber().equals(users.getAccountNumber())) {
+            users.setEnable(true);
+        }
+        else {
+            users.setEnable(false);
+        }
+        usersRepo.save(users) ;
+        return passengerMapper.toDTO(users);
+    }
+
+
 
 
     @Override
@@ -95,6 +141,12 @@ public class UserServiceImplement implements UserService {
 
         // kiem tra email ton tai
         checkEmailExisted(request.getEmail());
+
+        // tao accountNumber
+        String accountNumber = createAccountNumber(5) ;
+        String name = request.getLastName()+ request.getFirstName() ;
+        // goi accountNumber den email de xac thuc tai khoan
+        emailService.verifyEmail(mailForm, request.getEmail(), accountNumber , name);
         try {
             // lay access Token de co the goi API keycloak tao nguoi dung
             var accessToken = keycloakClientTokenService.getAccessToken() ;
@@ -119,7 +171,7 @@ public class UserServiceImplement implements UserService {
             // gan role cho user vua tao
             var role = identityProviderRepo.getRealmRoleByName(idpProperties.getRealm(),
                     "Bearer " + accessToken,
-                    "USER"
+                    RoleTemplate.USER.getValue()
             );
             identityProviderRepo.assignRealmRolesToUser(
                     idpProperties.getRealm(),
@@ -130,17 +182,14 @@ public class UserServiceImplement implements UserService {
 
             // luu thong tin vao db
             Users users = passengerMapper.toEntity(request) ;
-            users.setUserName(request.getUserName());
-            users.setUserKeycloakId(userKeycloakId);
-            users.setFirstName(request.getFirstName());
-            users.setEmail(request.getEmail());
+            users.setEnable(false);
+            users.setAccountNumber(accountNumber);
             // luu user vao db ( vi day la he thong booking nen co the hieu khi tao user moi la tao passenger moi)
             usersRepo.save(users) ;
             return passengerMapper.toDTO(users) ;
 
 
-        }
-        catch (FeignException feignException){
+        } catch (FeignException feignException) {
             throw keycloakNormalizer.handleKeycloakException(feignException);
         }
 
@@ -172,11 +221,6 @@ public class UserServiceImplement implements UserService {
         // khong can kiem tra user co ton tai khong vi lay tong tin username tu chinh phien dang nhap cua user
         Users passenger = usersRepo.findByUserName(currentUsername) ;
 
-        if (usersRequest.getUserName() != null
-                && !usersRequest.getUserName().equals(passenger.getUserName())
-                && usersRepo.findByUserName(usersRequest.getUserName()) != null) {
-            throw new AppException(ErrorCode.USER_EXISTED);
-        }
 
 
         if (passenger == null) {
@@ -201,16 +245,7 @@ public class UserServiceImplement implements UserService {
                     usersRequest
             );
             // cap nhat trong db
-            passenger.setLastName(usersRequest.getLastName());
-            passenger.setFirstName(usersRequest.getFirstName());
-            passenger.setUserName(usersRequest.getUserName());
-            // kiem tra email
-            if (usersRequest.getEmail() != null && !usersRequest.getEmail().equals(passenger.getEmail())) {
-                if (usersRepo.existsByEmail(usersRequest.getEmail())) {
-                    throw new AppException(ErrorCode.EMAIL_EXISTED) ;
-                }
-                passenger.setEmail(usersRequest.getEmail());
-            }
+            setValueUpdate(passenger , usersRequest);
             usersRepo.save(passenger) ;
 
             return passengerMapper.toDTO(passenger) ;

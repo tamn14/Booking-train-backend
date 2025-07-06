@@ -3,6 +3,8 @@ package com.example.booking_train_backend.Service.ServiceInterfaceImplement;
 import com.example.booking_train_backend.Entity.Booking;
 import com.example.booking_train_backend.Entity.Users;
 import com.example.booking_train_backend.Service.ServiceInterface.EmailService;
+import com.example.booking_train_backend.exception.AppException;
+import com.example.booking_train_backend.exception.ErrorCode;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,6 +51,28 @@ public class EmailServiceImplement implements EmailService {
             javaMailSender.send(message);
         } catch (MessagingException e) {
             throw new RuntimeException("Gửi email thất bại", e);
+        }
+    }
+
+    @Override
+    public void verifyEmail(String from, String to, String numberVerify , String name) {
+        MimeMessage message = javaMailSender.createMimeMessage();
+        try {
+            MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
+            helper.setFrom(from);
+            helper.setTo(to);
+            helper.setSubject("SmartCard - Xac thuc tai khoan");
+
+            String html = """
+    <p>Xin chào, %s</p>
+    <p>Dưới đây là mã xac thuc để xac thuc tai khoan cua ban:</p>
+    <p>%s</p>
+    """.formatted(name,
+                    numberVerify);
+            helper.setText(html, true);
+            javaMailSender.send(message);
+        } catch (MessagingException e) {
+            throw new AppException(ErrorCode.EMAIL_SERVICE_FAILED) ;
         }
     }
 }

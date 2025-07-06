@@ -5,6 +5,8 @@ import com.example.booking_train_backend.DTO.KeyloakRequest.ClientTokentExchange
 import com.example.booking_train_backend.Properties.IdpProperties;
 import com.example.booking_train_backend.Repo.IdentityProviderRepo;
 import com.example.booking_train_backend.Service.ServiceInterface.KeycloakClientTokenService;
+import com.example.booking_train_backend.exception.AppException;
+import com.example.booking_train_backend.exception.ErrorCode;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -34,7 +36,6 @@ public class KeycloakClientTokenServiceImplement implements KeycloakClientTokenS
     }
 
 
-
     @Override
     public void refreshToken() {
         ClientTokentExchangeParam clientTokentExchangeParam = ClientTokentExchangeParam.builder()
@@ -46,6 +47,10 @@ public class KeycloakClientTokenServiceImplement implements KeycloakClientTokenS
         ClientTokenExchangeResponse response = identityProviderRepo.exchangeClientToken(
                                                                                         idpProperties.getRealm(),
                                                                                         clientTokentExchangeParam) ;
+
+        if (response == null || response.getAccessToken() == null) {
+            throw new AppException(ErrorCode.KEYCLOAK_SERVICE_FAILED);
+        }
         this.cachedToken = response.getAccessToken() ;
         this.tokenExpiry = Instant.now().plusSeconds(Long.parseLong(response.getExpiresIn())) ;;
     }

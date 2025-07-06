@@ -29,6 +29,8 @@ public enum ErrorCode {
     JOURNEY_STATION_NOT_EXISTS(1018, "Journey Station not existed", HttpStatus.NOT_FOUND),
     JOURNEY_CARRIAGE_NOT_EXISTS(1019, "Journey Carriage not existed", HttpStatus.NOT_FOUND),
     TRAIN_TRIP_NOT_EXISTED(1020,"Train trip not existed" ,  HttpStatus.NOT_FOUND),
+    KEYCLOAK_SERVICE_FAILED(1023, "Can not get token from Keycloak ", HttpStatus.BAD_REQUEST),
+    EMAIL_SERVICE_FAILED(1024, "Can not send mail ", HttpStatus.BAD_REQUEST),
     BOOKING_TIMEOUT_FOR_CANCEL(1021,"Can't scancel booking after 30 minute" ,  HttpStatus.BAD_REQUEST),
     TRAIN_JOURNEY_NOT_EXISTED(1010,"Train journey not existed" ,  HttpStatus.NOT_FOUND);
 
