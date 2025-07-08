@@ -12,4 +12,5 @@ public interface AuthenticationService {
     public AuthenticationResponse refreshToken (RefreshRequest request) ;
 //    public String getKeycloakUserName(String email) ;
     public void logout(LogoutRequest logoutRequest) ;
+    public AuthenticationResponse googleLogin (String  code) ;
 }

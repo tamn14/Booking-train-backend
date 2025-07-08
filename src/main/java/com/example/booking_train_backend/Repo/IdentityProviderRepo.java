@@ -8,6 +8,7 @@ import com.example.booking_train_backend.DTO.KeyloakRequest.*;
 import com.example.booking_train_backend.DTO.Request.UsersUpdateRequest;
 import feign.QueryMap;
 import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.cloud.openfeign.SpringQueryMap;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Repository;
@@ -22,7 +23,7 @@ public interface IdentityProviderRepo {
             consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE
     ) ClientTokenExchangeResponse exchangeClientToken (
             @PathVariable("realm") String realm ,
-            @QueryMap ClientTokentExchangeParam clientTokentExchangeParam
+            @SpringQueryMap ClientTokentExchangeParam clientTokentExchangeParam
     ) ;
 
     @PostMapping(
@@ -30,9 +31,7 @@ public interface IdentityProviderRepo {
             consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE
     ) void revokeUserToken (
             @PathVariable("realm") String realm ,
-            @RequestParam("client_id") String clientId,
-            @RequestParam("client_secret") String clientSecret,
-            @RequestParam("refresh_token") String refreshToken
+            @SpringQueryMap RevokeUserParam revokeUserParam
     ) ;
 
     @PostMapping(
@@ -40,7 +39,7 @@ public interface IdentityProviderRepo {
             consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
     UserTokenExchangeResponse exchangeUserAccessToken(
             @PathVariable("realm") String realm ,
-            @QueryMap UserAccessTokenExchangeParam tokenExchangeParam
+            @SpringQueryMap UserAccessTokenExchangeParam tokenExchangeParam
     );
 
     @PostMapping(
@@ -48,7 +47,7 @@ public interface IdentityProviderRepo {
             consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
     UserTokenExchangeResponse exchangeUserRefreshToken(
             @PathVariable("realm") String realm ,
-            @QueryMap UserRefreshTokenExchangeParam tokenExchangeParam);
+            @SpringQueryMap UserRefreshTokenExchangeParam tokenExchangeParam);
 
     @PostMapping(
             value = "/admin/realms/{realm}/users",
@@ -86,6 +85,15 @@ public interface IdentityProviderRepo {
             @RequestHeader("Authorization") String bearerToken,
             @PathVariable("userId") String userId,
             @RequestBody List<RoleResponse> roles
+    );
+
+    @PostMapping(
+            value = "/realms/{realm}/protocol/openid-connect/token",
+            consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE
+    )
+    UserTokenExchangeResponse exchangeGoogleCodeToken(
+            @PathVariable("realm") String realm,
+            @SpringQueryMap GoogleTokenExchangeParam tokenExchangeParam
     );
 
 

@@ -50,3 +50,4 @@ volumes:
 # tao mang noi bo de cac container trong mang nay co the giao tiep voi nhau, khac mang khong the giao tiep duoc
 networks:
   backend-net:
+    external: true

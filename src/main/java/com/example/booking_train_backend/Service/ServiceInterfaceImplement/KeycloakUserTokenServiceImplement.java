@@ -1,6 +1,8 @@
 package com.example.booking_train_backend.Service.ServiceInterfaceImplement;
 
 import com.example.booking_train_backend.DTO.KeycloakResponse.UserTokenExchangeResponse;
+import com.example.booking_train_backend.DTO.KeyloakRequest.GoogleTokenExchangeParam;
+import com.example.booking_train_backend.DTO.KeyloakRequest.RevokeUserParam;
 import com.example.booking_train_backend.DTO.KeyloakRequest.UserAccessTokenExchangeParam;
 import com.example.booking_train_backend.DTO.KeyloakRequest.UserRefreshTokenExchangeParam;
 import com.example.booking_train_backend.DTO.Request.LoginRequest;
@@ -134,14 +136,54 @@ public class KeycloakUserTokenServiceImplement implements AuthenticationService 
             throw new AppException(ErrorCode.UNCATEGORIZED_EXCEPTION);
         }
 
+        RevokeUserParam param = RevokeUserParam.builder()
+                .client_id(idpProperties.getClientId())
+                .client_secret(idpProperties.getClientSecret())
+                .refresh_token(refreshToken)
+                .build();
+
         identityProviderRepo.revokeUserToken(
                 idpProperties.getRealm(),
-                idpProperties.getClientId(),
-                idpProperties.getClientSecret(),
-                refreshToken
+                param
         );
         if (accessToken != null && !accessToken.isEmpty()) {
             tokenBlacklistService.addToBlacklist(accessToken);
         }
+    }
+
+    @Override
+    public AuthenticationResponse googleLogin(String code) {
+        if (code == null || code.isEmpty()) {
+            throw new AppException(ErrorCode.INVALID_REQUEST);
+        }
+
+        GoogleTokenExchangeParam tokenExchangeParam = GoogleTokenExchangeParam.builder()
+                .grant_type("authorization_code")
+                .client_id(idpProperties.getClientId())
+                .client_secret(idpProperties.getClientSecret())
+                .code(code)
+                .redirect_uri(idpProperties.getGoogleRedirectUri())
+                .scope("openid")
+                .build() ;
+
+        UserTokenExchangeResponse response = identityProviderRepo.exchangeGoogleCodeToken(
+                idpProperties.getRealm(),
+                tokenExchangeParam
+        );
+
+        TokenInfo tokenInfo = new TokenInfo(
+                response.getAccessToken(),
+                Instant.now().plusSeconds(Long.parseLong(response.getExpiresIn())),
+                response.getRefreshToken(),
+                Instant.now().plusSeconds(Long.parseLong(response.getRefreshExpiresIn()))
+        );
+
+        return AuthenticationResponse.builder()
+                .accessToken(tokenInfo.getCachedToken())
+                .refreshToken(tokenInfo.getRefreshToken())
+                .tokenType("Bearer")
+                .expiresIn(tokenInfo.getTokenExpiry().getEpochSecond() - Instant.now().getEpochSecond())
+                .authenticated(true)
+                .build();
     }
 }
