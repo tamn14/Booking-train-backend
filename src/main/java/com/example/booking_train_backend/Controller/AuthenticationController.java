@@ -53,12 +53,14 @@ public class AuthenticationController {
                 .build();
     }
 
-
-
-
-
-
-
+    @PostMapping("/login/google")
+    public ApiResponse<AuthenticationResponse> loginWithGoogle(String code) {
+        AuthenticationResponse loginResponse = authenticationService.googleLogin(code);
+        return ApiResponse.<AuthenticationResponse>builder()
+                .mess("Success")
+                .result(loginResponse)
+                .build();
+    }
 
 
 

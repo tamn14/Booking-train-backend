@@ -122,6 +122,14 @@
 			<artifactId>spring-cloud-starter-openfeign</artifactId>
 			<version>4.1.0</version> <!-- Chọn version phù hợp -->
 		</dependency>
+
+
+		<!--		Swagger-->
+		<dependency>
+			<groupId>org.springdoc</groupId>
+			<artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+			<version>2.5.0</version>
+		</dependency>
 		<!-- Test -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>

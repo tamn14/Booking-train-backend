@@ -63,3 +63,14 @@ Qr:
    width: 300
    height: 300
 
+
+
+
+springdoc:
+  api-docs:
+    enabled: true
+  swagger-ui:
+    path: /swagger-ui
+    operationsSorter: method
+    tagsSorter: alpha
+
