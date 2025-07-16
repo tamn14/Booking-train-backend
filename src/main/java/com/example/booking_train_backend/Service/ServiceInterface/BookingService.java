@@ -11,5 +11,6 @@ public interface BookingService {
     public void deleteBooking(int id) ;
     public List<BookingResponse> findAll() ;
     public List<BookingResponse> getMyBooking() ;
+    public byte[] QrForPayment (int bookingId );
 
 }

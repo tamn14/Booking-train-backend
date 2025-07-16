@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 @Builder
 public class BookingRequest {
     private int passenger ;
-    private int bookingStatus ;
+//    private int bookingStatus ;
     private String trainStationStart ;
     private String trainStationEnd ;
     private int trainJourney  ;

@@ -11,7 +11,7 @@ public interface BookingMapper {
 
     // Mapping from BookingRequest to Booking entity
     @Mapping(source = "passenger", target = "users.id")
-    @Mapping(source = "bookingStatus", target = "bookingStatus.id")
+//    @Mapping(source = "bookingStatus", target = "bookingStatus.id")
     @Mapping(source = "trainStationStart", target = "trainStationStart.stationName")
     @Mapping(source = "trainStationEnd", target = "trainStationEnd.stationName")
     @Mapping(source = "trainJourney", target = "trainJourney.id")

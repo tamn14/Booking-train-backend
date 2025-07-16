@@ -1,5 +1,6 @@
 package com.example.booking_train_backend.Entity;
 
+import com.example.booking_train_backend.Properties.StatusBooking;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -16,7 +17,8 @@ public class BookingStatus {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id  ;
-    private String name ;
+    @Enumerated(EnumType.STRING)
+    private StatusBooking name ;
     @OneToMany(
             fetch = FetchType.LAZY ,
             cascade = {

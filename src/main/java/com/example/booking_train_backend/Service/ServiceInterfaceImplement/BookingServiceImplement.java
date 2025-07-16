@@ -3,6 +3,8 @@ package com.example.booking_train_backend.Service.ServiceInterfaceImplement;
 import com.example.booking_train_backend.DTO.Request.BookingRequest;
 import com.example.booking_train_backend.DTO.Response.BookingResponse;
 import com.example.booking_train_backend.Entity.*;
+import com.example.booking_train_backend.Properties.PaymentProperties;
+import com.example.booking_train_backend.Properties.StatusBooking;
 import com.example.booking_train_backend.Repo.*;
 import com.example.booking_train_backend.Service.ServiceInterface.BookingService;
 import com.example.booking_train_backend.Service.ServiceInterface.EmailService;
@@ -13,10 +15,8 @@ import com.example.booking_train_backend.mapper.BookingMapper;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.zxing.WriterException;
 import jakarta.transaction.Transactional;
-//import lombok.var;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.jwt.Jwt;
@@ -31,41 +31,20 @@ import java.util.Objects;
 
 @Service
 @Transactional
+@RequiredArgsConstructor
 public class BookingServiceImplement implements BookingService {
-    private BookingMapper bookingMapper ;
-    private BookingRepo bookingRepo ;
-    private UsersRepo usersRepo;
-    private BookingStatusRepo bookingStatusRepo ;
-    private TrainStationRepo trainStationRepo ;
-    private TrainJourneyRepo trainJourneyRepo ;
-    private CarriageClassRepo carriageClassRepo ;
-    private QrService qrCode ;
-    private EmailService emailService ;
-    private ObjectMapper objectMapper;
-    @Autowired
-    public BookingServiceImplement(BookingMapper bookingMapper,
-                                   BookingRepo bookingRepo,
-                                   UsersRepo usersRepo,
-                                   BookingStatusRepo bookingStatusRepo,
-                                   TrainStationRepo trainStationRepo,
-                                   TrainJourneyRepo trainJourneyRepo,
-                                   CarriageClassRepo carriageClassRepo,
-                                   QrService qrCode,
-                                   EmailService emailService,
-                                   ObjectMapper objectMapper
-                                   ) {
-        this.bookingMapper = bookingMapper;
-        this.bookingRepo = bookingRepo;
-        this.usersRepo = usersRepo;
-        this.bookingStatusRepo = bookingStatusRepo;
-        this.trainStationRepo = trainStationRepo;
-        this.trainJourneyRepo = trainJourneyRepo;
-        this.carriageClassRepo = carriageClassRepo;
-        this.qrCode = qrCode;
-        this.emailService = emailService;
-        this.objectMapper = objectMapper;
+    private final BookingMapper bookingMapper ;
+    private final BookingRepo bookingRepo ;
+    private final UsersRepo usersRepo;
+    private final BookingStatusRepo bookingStatusRepo ;
+    private final TrainStationRepo trainStationRepo ;
+    private final TrainJourneyRepo trainJourneyRepo ;
+    private final CarriageClassRepo carriageClassRepo ;
+    private final QrService qrCode ;
+    private final EmailService emailService ;
+    private final ObjectMapper objectMapper;
+    private final PaymentProperties paymentProperties ;
 
-    }
 
     @Value("${spring.mail.from}")
     private String mailForm ;
@@ -98,9 +77,13 @@ public class BookingServiceImplement implements BookingService {
         return trainJourneyRepo.findById(trainJourneyId)
                 .orElseThrow(()-> new AppException(ErrorCode.TRAIN_JOURNEY_NOT_EXISTED)) ;
     }
-    private BookingStatus getBookingStatusById (int id) {
-        return bookingStatusRepo.findById(id)
-                .orElseThrow(()-> new AppException(ErrorCode.STATUS_NOT_EXISTED) );
+    private BookingStatus getBookingStatusByName (String name) {
+        BookingStatus bookingStatus =  bookingStatusRepo.findByName(name) ;
+        if(bookingStatus == null) {
+            throw new AppException(ErrorCode.BOOKING_STATUS_NOT_EXISTED) ;
+        }
+        return bookingStatus ;
+
     }
 
     private CarriageClass getCarriageClassByName (String name) {
@@ -173,7 +156,7 @@ public class BookingServiceImplement implements BookingService {
         TrainJourney trainJourney = getTrainJourneyById(request.getTrainJourney()) ;
 
         // kiem tra bookingStatus ton tai
-        BookingStatus bookingStatus = getBookingStatusById(request.getBookingStatus()) ;
+        BookingStatus bookingStatus = getBookingStatusByName(StatusBooking.PENDING.name()) ;
 
         // kiem tra carriageClass ton tai
         CarriageClass carriageClass = getCarriageClassByName(request.getCarriageClass()) ;
@@ -202,7 +185,7 @@ public class BookingServiceImplement implements BookingService {
             }
 
         } catch (WriterException | IOException e) {
-            throw new RuntimeException(e);
+            throw new AppException(ErrorCode.EMAIL_SERVICE_FAILED);
         }
 
 
@@ -258,5 +241,23 @@ public class BookingServiceImplement implements BookingService {
                 .map(bookingMapper::toResponse)
                 .toList();
 
+    }
+
+    @Override
+    @PreAuthorize("hasRole('USER')")
+    public byte[] QrForPayment(int bookingId) {
+
+        Booking booking = getBookingById(bookingId) ;
+
+        checkOwnerBooking(booking);
+
+        String qrUrl = qrCode.buildVietQRUrl(paymentProperties.getBankCode(),
+                paymentProperties.getBankAccount(), booking.getAmountPaid() , bookingId) ;
+
+        try {
+            return qrCode.generateQRCodeToFile(qrUrl ,widthQr, heightQr );
+        } catch (Exception e) {
+            throw new AppException(ErrorCode.CANNOT_CREATE_QR);
+        }
     }
 }

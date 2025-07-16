@@ -63,7 +63,10 @@ Qr:
    width: 300
    height: 300
 
-
+#Config Payment
+payment:
+  bank-code: Vietcombank
+  bank-account:
 
 
 springdoc:

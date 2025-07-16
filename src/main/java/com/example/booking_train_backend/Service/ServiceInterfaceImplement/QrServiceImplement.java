@@ -1,5 +1,6 @@
 package com.example.booking_train_backend.Service.ServiceInterfaceImplement;
 
+import com.example.booking_train_backend.Properties.VietQrTemplate;
 import com.example.booking_train_backend.Service.ServiceInterface.QrService;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.EncodeHintType;
@@ -28,5 +29,13 @@ public class QrServiceImplement implements QrService {
         MatrixToImageWriter.writeToStream(bitMatrix, "PNG", pngOutputStream);
         return pngOutputStream.toByteArray();
 
+    }
+
+    @Override
+    public String buildVietQRUrl(String bankCode, String accountNumber, int amount, int orderId) {
+        String baseUrl = "https://img.vietqr.io/image"; // Url vietQr
+        String template = VietQrTemplate.COMPACT2.getValue();
+        return String.format("%s/%s-%s-%s.png?amount=%d&addInfo=DH%s",
+                baseUrl, bankCode, accountNumber, template, amount, orderId);
     }
 }

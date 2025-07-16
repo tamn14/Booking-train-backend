@@ -32,7 +32,9 @@ public enum ErrorCode {
     KEYCLOAK_SERVICE_FAILED(1023, "Can not get token from Keycloak ", HttpStatus.BAD_REQUEST),
     EMAIL_SERVICE_FAILED(1024, "Can not send mail ", HttpStatus.BAD_REQUEST),
     INVALID_REQUEST(1025, "Invalid request , can not find request ", HttpStatus.BAD_REQUEST),
-    BOOKING_TIMEOUT_FOR_CANCEL(1021,"Can't scancel booking after 30 minute" ,  HttpStatus.BAD_REQUEST),
+    BOOKING_TIMEOUT_FOR_CANCEL(1026,"Can't find status booking " , HttpStatus.NOT_FOUND),
+    BOOKING_STATUS_NOT_EXISTED(1021,"Can't scancel booking after 30 minute" ,  HttpStatus.BAD_REQUEST),
+    CANNOT_CREATE_QR(1019,"cannot create QR ",HttpStatus.BAD_REQUEST ),
     TRAIN_JOURNEY_NOT_EXISTED(1010,"Train journey not existed" ,  HttpStatus.NOT_FOUND);
 
     ErrorCode(int code, String message, HttpStatusCode statusCode) {
