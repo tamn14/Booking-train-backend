@@ -251,11 +251,9 @@ public class BookingServiceImplement implements BookingService {
 
         checkOwnerBooking(booking);
 
-        String qrUrl = qrCode.buildVietQRUrl(paymentProperties.getBankCode(),
-                paymentProperties.getBankAccount(), booking.getAmountPaid() , bookingId) ;
-
+        String paymentUrl = qrCode.createVnpayPaymentUrl(booking);
         try {
-            return qrCode.generateQRCodeToFile(qrUrl ,widthQr, heightQr );
+            return qrCode.generateQRCodeToFile(paymentUrl, 300, 300);
         } catch (Exception e) {
             throw new AppException(ErrorCode.CANNOT_CREATE_QR);
         }

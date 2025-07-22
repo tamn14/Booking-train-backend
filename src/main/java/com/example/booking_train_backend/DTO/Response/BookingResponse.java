@@ -10,6 +10,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @Builder
 public class BookingResponse {
+    private int bookingId ;
     private UsersResponse passenger ;
     private String bookingStatus ;
     private String trainStationStart ;

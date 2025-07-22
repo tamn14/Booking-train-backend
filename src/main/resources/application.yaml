@@ -65,8 +65,10 @@ Qr:
 
 #Config Payment
 payment:
-  bank-code: Vietcombank
-  bank-account:
+  vnp_TmnCode:
+  vnp_HashSecret:
+  vnp_Url: "https://sandbox.vnpayment.vn/paymentv2/vpcpay.html";
+  returnUrl : "https://your-domain.com/vnpay-return"; // không dùng nhưng vẫn cần điền
 
 
 springdoc:

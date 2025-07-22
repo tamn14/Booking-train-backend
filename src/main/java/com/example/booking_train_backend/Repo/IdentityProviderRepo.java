@@ -23,7 +23,7 @@ public interface IdentityProviderRepo {
             consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE
     ) ClientTokenExchangeResponse exchangeClientToken (
             @PathVariable("realm") String realm ,
-            @SpringQueryMap ClientTokentExchangeParam clientTokentExchangeParam
+            @QueryMap ClientTokentExchangeParam clientTokentExchangeParam
     ) ;
 
     @PostMapping(
@@ -31,7 +31,7 @@ public interface IdentityProviderRepo {
             consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE
     ) void revokeUserToken (
             @PathVariable("realm") String realm ,
-            @SpringQueryMap RevokeUserParam revokeUserParam
+            @QueryMap RevokeUserParam revokeUserParam
     ) ;
 
     @PostMapping(
@@ -39,7 +39,7 @@ public interface IdentityProviderRepo {
             consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
     UserTokenExchangeResponse exchangeUserAccessToken(
             @PathVariable("realm") String realm ,
-            @SpringQueryMap UserAccessTokenExchangeParam tokenExchangeParam
+            @QueryMap UserAccessTokenExchangeParam tokenExchangeParam
     );
 
     @PostMapping(
@@ -47,7 +47,7 @@ public interface IdentityProviderRepo {
             consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
     UserTokenExchangeResponse exchangeUserRefreshToken(
             @PathVariable("realm") String realm ,
-            @SpringQueryMap UserRefreshTokenExchangeParam tokenExchangeParam);
+            @QueryMap UserRefreshTokenExchangeParam tokenExchangeParam);
 
     @PostMapping(
             value = "/admin/realms/{realm}/users",
@@ -93,7 +93,7 @@ public interface IdentityProviderRepo {
     )
     UserTokenExchangeResponse exchangeGoogleCodeToken(
             @PathVariable("realm") String realm,
-            @SpringQueryMap GoogleTokenExchangeParam tokenExchangeParam
+            @QueryMap GoogleTokenExchangeParam tokenExchangeParam
     );
 
 
