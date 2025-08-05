@@ -1,10 +1,10 @@
 package com.example.booking_train_backend.Service.ServiceInterfaceImplement;
 
 import com.example.booking_train_backend.DTO.KeycloakResponse.UserTokenExchangeResponse;
-import com.example.booking_train_backend.DTO.KeyloakRequest.GoogleTokenExchangeParam;
-import com.example.booking_train_backend.DTO.KeyloakRequest.RevokeUserParam;
-import com.example.booking_train_backend.DTO.KeyloakRequest.UserAccessTokenExchangeParam;
-import com.example.booking_train_backend.DTO.KeyloakRequest.UserRefreshTokenExchangeParam;
+import com.example.booking_train_backend.DTO.KeycloakRequest.GoogleTokenExchangeParam;
+import com.example.booking_train_backend.DTO.KeycloakRequest.RevokeUserParam;
+import com.example.booking_train_backend.DTO.KeycloakRequest.UserAccessTokenExchangeParam;
+import com.example.booking_train_backend.DTO.KeycloakRequest.UserRefreshTokenExchangeParam;
 import com.example.booking_train_backend.DTO.Request.LoginRequest;
 import com.example.booking_train_backend.DTO.Request.LogoutRequest;
 import com.example.booking_train_backend.DTO.Request.RefreshRequest;
@@ -22,8 +22,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 @Service
 @Transactional
@@ -78,7 +76,6 @@ public class KeycloakUserTokenServiceImplement implements AuthenticationService 
     @Override
     public AuthenticationResponse login(LoginRequest loginRequest) {
         TokenInfo tokenInfo = requestNewToken(loginRequest);
-
         return AuthenticationResponse.builder()
                 .accessToken(tokenInfo.getCachedToken())
                 .refreshToken(tokenInfo.getRefreshToken())

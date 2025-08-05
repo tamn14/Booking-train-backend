@@ -2,15 +2,14 @@ package com.example.booking_train_backend.Config;
 
 // ------------- file nay dung de tao ngay mot tai khoan admin khi vua khoi dong --------------------//
 
-import com.example.booking_train_backend.DTO.KeyloakRequest.Credential;
-import com.example.booking_train_backend.DTO.KeyloakRequest.UserCreationParam;
-import com.example.booking_train_backend.DTO.Request.UsersRequest;
+import com.example.booking_train_backend.DTO.KeycloakRequest.Credential;
+import com.example.booking_train_backend.DTO.KeycloakRequest.UserCreationParam;
 import com.example.booking_train_backend.Entity.Users;
 import com.example.booking_train_backend.Properties.IdpProperties;
+import com.example.booking_train_backend.Properties.RoleTemplate;
 import com.example.booking_train_backend.Repo.IdentityProviderRepo;
 import com.example.booking_train_backend.Repo.UsersRepo;
 import com.example.booking_train_backend.Service.ServiceInterface.KeycloakClientTokenService;
-import com.example.booking_train_backend.Service.ServiceInterface.UserService;
 import com.example.booking_train_backend.Util.Extract;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -19,7 +18,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.List;
 
@@ -44,8 +42,11 @@ public class ApplicationConfig {
                         "Bearer " + accessToken,
                         UserCreationParam.builder()
                                 .username("admin")
+                                .email("Admin@gmail.com")
+                                .lastName("admin")
+                                .firstName("admin")
                                 .enabled(true)
-                                .emailVerified(false)
+                                .emailVerified(true)
                                 .credentials(List.of(Credential.builder()
                                         .type("password")
                                         .value("admin")
@@ -57,7 +58,7 @@ public class ApplicationConfig {
                 // gan role cho user vua tao
                 var role = identityProviderRepo.getRealmRoleByName(idpProperties.getRealm(),
                         "Bearer " + accessToken,
-                        "ADMIN"
+                        RoleTemplate.ADMIN.getValue()
                 );
                 identityProviderRepo.assignRealmRolesToUser(
                         idpProperties.getRealm(),
@@ -69,6 +70,8 @@ public class ApplicationConfig {
                 // luu thong tin vao db
                 Users users = Users.builder()
                         .userName("admin")
+                        .lastName("admin")
+                        .firstName("admin")
                         .email("Admin@gmail.com")
                         .userKeycloakId(userKeycloakId)
                         .build();

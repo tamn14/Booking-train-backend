@@ -1,7 +1,7 @@
 package com.example.booking_train_backend.Service.ServiceInterfaceImplement;
 
 import com.example.booking_train_backend.DTO.KeycloakResponse.ClientTokenExchangeResponse;
-import com.example.booking_train_backend.DTO.KeyloakRequest.ClientTokentExchangeParam;
+import com.example.booking_train_backend.DTO.KeycloakRequest.ClientTokentExchangeParam;
 import com.example.booking_train_backend.Properties.IdpProperties;
 import com.example.booking_train_backend.Repo.IdentityProviderRepo;
 import com.example.booking_train_backend.Service.ServiceInterface.KeycloakClientTokenService;
@@ -39,7 +39,7 @@ public class KeycloakClientTokenServiceImplement implements KeycloakClientTokenS
     @Override
     public void refreshToken() {
         ClientTokentExchangeParam clientTokentExchangeParam = ClientTokentExchangeParam.builder()
-                .grant_type("client_credentials") // gia tri mac dinh cua keycloak
+                .grant_type("client_credentials")
                 .client_id(idpProperties.getClientId())
                 .client_secret(idpProperties.getClientSecret())
                 .scope("openid")

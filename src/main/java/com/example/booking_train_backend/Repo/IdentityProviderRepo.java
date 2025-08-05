@@ -4,17 +4,18 @@ package com.example.booking_train_backend.Repo;
 import com.example.booking_train_backend.DTO.KeycloakResponse.ClientTokenExchangeResponse;
 import com.example.booking_train_backend.DTO.KeycloakResponse.RoleResponse;
 import com.example.booking_train_backend.DTO.KeycloakResponse.UserTokenExchangeResponse;
-import com.example.booking_train_backend.DTO.KeyloakRequest.*;
+import com.example.booking_train_backend.DTO.KeycloakRequest.*;
 import com.example.booking_train_backend.DTO.Request.UsersUpdateRequest;
+import com.example.booking_train_backend.DTO.Response.UsersResponse;
 import feign.QueryMap;
 import org.springframework.cloud.openfeign.FeignClient;
-import org.springframework.cloud.openfeign.SpringQueryMap;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Repository;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
+
 @FeignClient(name = "identity-keycloak-client", url = "${idp.url}")
 public interface IdentityProviderRepo {
 
@@ -95,6 +96,24 @@ public interface IdentityProviderRepo {
             @PathVariable("realm") String realm,
             @QueryMap GoogleTokenExchangeParam tokenExchangeParam
     );
+
+    @GetMapping("/admin/realms/{realm}/users/{id}")
+    Map<String, Object> getUserById(
+            @RequestHeader("Authorization") String token,
+            @PathVariable("realm") String realm,
+            @PathVariable("id") String userId
+    );
+
+
+    // verify email
+    @PostMapping(value = "/admin/realms/{realm}/users/{userId}/send-verify-email")
+    void sendVerificationEmail(
+            @RequestHeader("Authorization") String bearerToken,
+            @PathVariable("realm") String realm,
+            @PathVariable("userId") String userId
+    );
+
+
 
 
 

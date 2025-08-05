@@ -1,4 +1,4 @@
-package com.example.booking_train_backend.DTO.KeyloakRequest;
+package com.example.booking_train_backend.DTO.KeycloakRequest;
 
 import lombok.*;
 import lombok.experimental.FieldDefaults;

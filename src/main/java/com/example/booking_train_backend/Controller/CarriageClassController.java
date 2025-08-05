@@ -44,7 +44,7 @@ public class CarriageClassController {
 
     }
 
-    @PostMapping("/create")
+    @PostMapping()
     public ApiResponse<CarriageClassResponse> addCarriageClass(@RequestBody @Valid CarriageClassRequest carriageClassRequest) {
         CarriageClassResponse carriageClassResponse = carriageClassService.add(carriageClassRequest) ;
         return ApiResponse.<CarriageClassResponse>builder()

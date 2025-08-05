@@ -2,6 +2,8 @@ server:
   port: 8080
 
 spring:
+  profiles:
+    active: dev
   application:
     name: booking-train-backend
   redis:
@@ -9,8 +11,8 @@ spring:
     port: 6379
   datasource:
     url: jdbc:mysql://localhost:3306/Booking_Train
-    username: root
-    password: root
+    username: ${DATASOURCE_USERNAME}
+    password: ${DATASOURCE_PASSWORD}
   jpa:
     hibernate:
       ddl-auto: update
@@ -18,7 +20,7 @@ spring:
     oauth2:
       resourceserver:
         jwt:
-          issuer-uri: http://localhost:8081/realms/booking
+          issuer-uri: ${ISSUER_URI}
   mail:
     host: smtp.gmail.com
     port: 587
@@ -53,10 +55,10 @@ bucket4j:
 
 idp:
   url: http://localhost:8081
-  client-id:
-  client-secret:
-  realm:
-  google-redirect-uri: http://localhost:3000/oauth2/callback
+  client-id: ${IDP_CLIENT_ID}
+  client-secret: ${IDP_CLIENT_SECRET}
+  realm: ${IDP_REALM}
+  google-redirect-uri: http://localhost:5173/oauth2/callback
 
 #Config Qr
 Qr:
@@ -67,15 +69,21 @@ Qr:
 payment:
   vnp_TmnCode:
   vnp_HashSecret:
-  vnp_Url: "https://sandbox.vnpayment.vn/paymentv2/vpcpay.html";
-  returnUrl : "https://your-domain.com/vnpay-return"; // không dùng nhưng vẫn cần điền
+  vnp_Url: "https://sandbox.vnpayment.vn/paymentv2/vpcpay.html"
+  returnUrl : "https://your-domain.com/vnpay-return"
 
 
 springdoc:
   api-docs:
     enabled: true
   swagger-ui:
+    enabled: true
     path: /swagger-ui
     operationsSorter: method
     tagsSorter: alpha
+
+logging:
+  level:
+    org.springframework.web: DEBUG
+    org.springframework.validation: DEBUG
 

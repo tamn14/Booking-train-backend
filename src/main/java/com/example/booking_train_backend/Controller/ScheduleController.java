@@ -22,7 +22,7 @@ public class ScheduleController {
         this.scheduleService = scheduleService;
     }
 
-    @PostMapping("/create")
+    @PostMapping()
     public ApiResponse<ScheduleResponse> addSchedule (@RequestBody @Valid ScheduleRequest scheduleRequest ) {
         ScheduleResponse scheduleResponse = scheduleService.add(scheduleRequest) ;
         return ApiResponse.<ScheduleResponse>builder()

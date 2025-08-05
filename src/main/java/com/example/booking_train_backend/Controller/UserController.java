@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/user")
+@RequestMapping("/users")
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @Slf4j
 
@@ -28,7 +28,7 @@ public class UserController {
         this.userService = userService;
     }
 
-    @PostMapping("/create")
+    @PostMapping()
     public ApiResponse<UsersResponse> createUser (@RequestBody @Valid UsersRequest usersRequest) {
         UsersResponse usersResponse = userService.createUser(usersRequest) ;
         return ApiResponse.<UsersResponse>builder()
@@ -95,5 +95,8 @@ public class UserController {
                 .mess("Success")
                 .build() ;
     }
+
+
+
 
 }

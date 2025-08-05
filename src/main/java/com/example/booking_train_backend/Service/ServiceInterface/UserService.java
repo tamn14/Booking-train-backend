@@ -17,6 +17,6 @@ public interface UserService {
    public UsersResponse getMyInfor() ;
    public void changePassword (ChangePasswordRequest request) ;
    public void deleteUser(int id) ;
-   public UsersResponse VerifyUsers(VerifyUserRequest accountNumber , int id ) ;
+
 
 }

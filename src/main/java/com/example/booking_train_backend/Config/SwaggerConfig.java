@@ -19,12 +19,5 @@ public class SwaggerConfig {
                         .description("Tài liệu API cho hệ thống thẻ cá nhân thông minh"));
     }
 
-    @Bean
-    public GroupedOpenApi userApi() {
-        return GroupedOpenApi.builder()
-                .group("users")
-                .pathsToMatch("/users/**")
-                .build();
-    }
 
 }

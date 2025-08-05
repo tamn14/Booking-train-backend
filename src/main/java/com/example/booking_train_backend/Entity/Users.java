@@ -24,8 +24,6 @@ public class Users {
     private String userName;
     private String lastName  ;
     private String firstName ;
-    private boolean enable;
-    private String accountNumber ;
     @Column(nullable = false , unique = true)
     private String email ;
 

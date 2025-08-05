@@ -51,7 +51,7 @@ public class BookingController {
                 .build();
     }
 
-    @PostMapping("/create")
+    @PostMapping()
     public ApiResponse<BookingResponse> addBooking(@RequestBody @Valid BookingRequest bookingCreateRequest) {
         BookingResponse bookingResponse = bookingService.addBooking(bookingCreateRequest) ;
         return ApiResponse.<BookingResponse>builder()
